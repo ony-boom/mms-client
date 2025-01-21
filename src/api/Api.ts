@@ -1,3 +1,4 @@
+import { UseQueryResult } from "@tanstack/react-query";
 import { SortOrder, Track, TrackSortField } from "@/api/types.ts";
 
 export type GetTrackWhereInput = {
@@ -12,15 +13,9 @@ export type GetTrackSortByInput = {
   order: SortOrder;
 };
 
-export type ApiBaseReturnType<T, E = unknown> = {
-  data: T | null;
-  errors: E | null;
-  loading: boolean;
-};
-
 export interface Api {
   useTracks: (
     where?: GetTrackWhereInput,
     sortBy?: GetTrackSortByInput,
-  ) => ApiBaseReturnType<Track[]>;
+  ) => UseQueryResult<Track[]>;
 }

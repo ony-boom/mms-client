@@ -1,6 +1,4 @@
-import { gql } from "@apollo/client/core";
-
-export const GET_TRACKS = gql`
+export const GET_TRACKS = /*GraphQL*/ `
     query GetTracks {
         tracks {
             title

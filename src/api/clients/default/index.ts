@@ -1,38 +1,23 @@
 import { Track } from "@/api";
+import type { Api } from "@/api/Api";
 import { GET_TRACKS } from "./queries";
-import { apolloClient } from "./apollo";
-import { useEffect, useState } from "react";
-import type { Api, ApiBaseReturnType } from "@/api/Api";
+import { axiosClient } from "./axiosClient";
+import { useQuery } from "@tanstack/react-query";
 
 export const defaultApi: Api = {
   useTracks: (where, sortBy) => {
-    const [state, setState] = useState<ApiBaseReturnType<Track[]>>({
-      data: null,
-      errors: null,
-      loading: true,
-    });
-
-    useEffect(() => {
-      apolloClient
-        .query<Track[]>({
+    return useQuery<Track[]>({
+      queryKey: ["tracks", where, sortBy],
+      queryFn: async () => {
+        const { data: responseData } = await axiosClient.post<{
+          data: Track[];
+        }>("/", {
           query: GET_TRACKS,
-          variables: {
-            where,
-            sortBy,
-          },
-        })
-        .then((result) => {
-          setState((oldState) => {
-            return {
-              ...oldState,
-              data: result.data ?? null,
-              loading: result.loading,
-              errors: result.errors ?? null,
-            };
-          });
+          variables: { where, sortBy },
         });
-    }, []);
 
-    return state;
+        return responseData.data;
+      },
+    });
   },
 };
