@@ -1,7 +1,8 @@
 export type Track = {
   id: string;
-  name: string;
+  title: string;
   path: string;
+  artists: string[];
   dateAdded?: string;
   isFavorite?: boolean;
 };

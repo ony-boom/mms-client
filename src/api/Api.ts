@@ -18,4 +18,6 @@ export interface Api {
     where?: GetTrackWhereInput,
     sortBy?: GetTrackSortByInput,
   ) => UseQueryResult<Track[]>;
+
+  useTrackCover: (trackId: string) => UseQueryResult<string>;
 }

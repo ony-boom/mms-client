@@ -2,8 +2,8 @@ import "./styles/main.css";
 import { useState } from "react";
 import "@fontsource/manrope/index.css";
 import { Outlet } from "react-router";
+import { AppSidebar } from "@/components";
 import { ApiContext } from "@/context/ApiContext.ts";
-import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 function Layout() {

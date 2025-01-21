@@ -1,1 +1,1 @@
-export * from "./GetTracks.ts";
+export * from "./get-tracks";
