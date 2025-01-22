@@ -1,4 +1,5 @@
 import { Track } from "@/api";
+import { TrackCard } from "@/pages/Tracks/components/track-card.tsx";
 
 export function TracksGrid({ tracks }: TracksGridProps) {
   if (tracks.length === 0) {
@@ -8,7 +9,13 @@ export function TracksGrid({ tracks }: TracksGridProps) {
       </div>
     );
   }
-  return <div>You have {tracks.length} tracks</div>;
+  return (
+    <div className="grid gap-4 grid-cols-5">
+      {tracks.map((track) => (
+        <TrackCard key={track.id} track={track} />
+      ))}
+    </div>
+  );
 }
 
 type TracksGridProps = {

@@ -22,15 +22,15 @@ export const defaultApi: Api = {
     });
   },
 
-  useTrackCover: (trackID) => {
+  useTrackCover: (trackId) => {
     return useQuery<string>({
-      queryKey: ["track-cover", trackID],
+      queryKey: ["track-cover", trackId],
       queryFn: async () => {
         const { data: responseData } = await axiosClient.post<{
           data: { coverFromTrack: string };
         }>("/", {
           query: GET_TRACK_COVER,
-          variables: { trackId: trackID },
+          variables: { trackId },
         });
 
         return responseData.data.coverFromTrack;
