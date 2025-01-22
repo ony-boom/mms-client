@@ -1,7 +1,7 @@
 import { Track } from "@/api";
 import type { Api } from "@/api/Api";
 import { GET_TRACKS } from "./queries";
-import {axiosClient, BASE_URL} from "./axios-client";
+import { axiosClient, BASE_URL } from "./axios-client";
 import { useQuery } from "@tanstack/react-query";
 
 export const defaultApi: Api = {
@@ -28,5 +28,9 @@ export const defaultApi: Api = {
         return `${BASE_URL}/api/cover/${trackId}`;
       },
     });
+  },
+
+  useTrackSrc: (trackIds) => {
+    return trackIds.map((trackId) => `${BASE_URL}/api/track/${trackId}`);
   },
 };

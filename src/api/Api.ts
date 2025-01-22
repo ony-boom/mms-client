@@ -20,4 +20,5 @@ export interface Api {
   ) => UseQueryResult<Track[]>;
 
   useTrackCover: (trackId: string) => UseQueryResult<string>;
+  useTrackSrc: (trackIds: string[]) => string[];
 }
