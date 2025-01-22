@@ -9,6 +9,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 import { AppRoutes } from "@/route.types";
 import { NavLink } from "react-router";
@@ -17,7 +19,7 @@ import { clsx } from "clsx";
 export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent>
+      <SidebarContent className="overflow-x-hidden">
         <SidebarGroup>
           <SidebarGroupLabel>My music player</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -49,6 +51,9 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarTrigger />
+      </SidebarFooter>
     </Sidebar>
   );
 }

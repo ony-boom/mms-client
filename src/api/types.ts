@@ -13,12 +13,12 @@ export type Artist = {
 };
 
 export enum SortOrder {
-  ASC = "asc",
-  DESC = "desc",
+  ASC = "ASC",
+  DESC = "DESC",
 }
 
 export enum TrackSortField {
-  TITLE = "title",
-  DATE_ADDED = "dateAdded",
-  ALBUM_TITLE = "albumTitle",
+  TITLE = "TITLE",
+  DATE_ADDED = "DATE_ADDED",
+  ALBUM_TITLE = "ALBUM_TITLE",
 }

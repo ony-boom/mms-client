@@ -10,7 +10,7 @@ export function TracksGrid({ tracks }: TracksGridProps) {
     );
   }
   return (
-    <div className="grid gap-4 grid-cols-5">
+    <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(256px,1fr))]  gap-8 overflow-x-clip">
       {tracks.map((track) => (
         <TrackCard key={track.id} track={track} />
       ))}

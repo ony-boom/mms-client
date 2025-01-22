@@ -2,7 +2,7 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { SortOrder, Track, TrackSortField } from "@/api/types.ts";
 
 export type GetTrackWhereInput = {
-  id: string;
+  id?: string;
   title?: string;
   artistName?: string;
   albumTitle?: string;
