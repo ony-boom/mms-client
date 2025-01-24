@@ -8,8 +8,8 @@ export function PageTitle({
   menu?: ReactNode;
 }) {
   return (
-    <nav className="bg-background/[95%] backdrop-blur sticky top-0 z-10 py-3 flex justify-between items-center">
-      <h1 className="text-primary font-bold text-lg">{title}</h1>
+    <nav className="sticky top-0 z-30 flex items-center justify-between bg-background py-3">
+      <h1 className="text-lg font-bold text-primary">{title}</h1>
 
       {menu && menu}
     </nav>

@@ -21,4 +21,5 @@ export enum TrackSortField {
   TITLE = "TITLE",
   DATE_ADDED = "DATE_ADDED",
   ALBUM_TITLE = "ALBUM_TITLE",
+  NONE = "",
 }

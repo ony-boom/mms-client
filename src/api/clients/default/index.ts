@@ -21,16 +21,11 @@ export const defaultApi: Api = {
     });
   },
 
-  useTrackCover: (trackId) => {
-    return useQuery<string>({
-      queryKey: ["track-cover", trackId],
-      queryFn: async () => {
-        return `${BASE_URL}/api/cover/${trackId}`;
-      },
-    });
+  getTrackCoverSrc: (trackId) => {
+    return `${BASE_URL}/api/cover/${trackId}`;
   },
 
-  useTrackSrc: (trackIds) => {
-    return trackIds.map((trackId) => `${BASE_URL}/api/track/${trackId}`);
+  getTrackAudioSrc: (trackIds) => {
+    return trackIds.map((trackId) => `${BASE_URL}/api/audio/${trackId}`);
   },
 };

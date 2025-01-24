@@ -1,6 +1,5 @@
 import { useApiClient } from "@/hooks";
-import { Fade } from "transitions-kit";
-import { AsyncImage } from "loadable-image";
+import { Cover } from "@/components/cover";
 
 export function TrackCover({
   trackId,
@@ -10,14 +9,13 @@ export function TrackCover({
   trackTitle: string;
 }) {
   const api = useApiClient();
-  const { data } = api.useTrackCover(trackId);
+  const src = api.getTrackCoverSrc(trackId);
 
   return (
-    <div className="w-full max-w-[456px] aspect-square rounded-lg overflow-hidden">
-      <AsyncImage
-        src={data!}
+    <div className="aspect-square w-full max-w-[456px] overflow-hidden rounded-lg">
+      <Cover
+        src={src}
         alt={trackTitle}
-        Transition={Fade}
         className="h-full w-full"
       />
     </div>

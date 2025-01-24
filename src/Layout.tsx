@@ -1,8 +1,9 @@
 import "./styles/main.css";
 import { useState } from "react";
+import { cn } from "@/lib/utils.ts";
 import "@fontsource/manrope/index.css";
 import { Outlet } from "react-router";
-import { AppSidebar } from "@/components";
+import { AppSidebar, Player } from "@/components";
 import { ApiContext } from "@/context/ApiContext.ts";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
@@ -23,10 +24,18 @@ function Layout() {
         onOpenChange={handleSidebarOpenChange}
       >
         <AppSidebar />
-        <main className="px-4 w-full pb-4">
-          <div className="ml-1">
-            <Outlet />
-          </div>
+        <main className="ml-1 w-full px-4 pb-4">
+          <Outlet />
+
+          <Player
+            style={{
+              // changing the width is weird, so we're changing the padding instead. I don't know how to do it with tailwind.
+              paddingRight: `calc(100% - ${sidebarOpenState ? "var(--sidebar-width)" : "var(--sidebar-width-icon)"})`,
+            }}
+            className={cn(
+              "fixed bottom-0 z-50 h-12 w-full -translate-x-[20px] border-t border-border bg-background px-4 transition-all",
+            )}
+          />
         </main>
       </SidebarProvider>
     </ApiContext.Provider>

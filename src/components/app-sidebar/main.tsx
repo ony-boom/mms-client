@@ -32,9 +32,9 @@ export function AppSidebar() {
                         asChild
                         className={clsx(
                           {
-                            "!text-primary !bg-primary/10": isActive,
+                            "!bg-primary/10 !text-primary": isActive,
                           },
-                          "transition-colors duration-300 hover:text-primary hover:bg-primary/5",
+                          "transition-colors duration-300 hover:bg-primary/5 hover:text-primary",
                         )}
                         tooltip={item.title}
                       >

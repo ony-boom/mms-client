@@ -19,6 +19,6 @@ export interface Api {
     sortBy?: GetTrackSortByInput,
   ) => UseQueryResult<Track[]>;
 
-  useTrackCover: (trackId: string) => UseQueryResult<string>;
-  useTrackSrc: (trackIds: string[]) => string[];
+  getTrackCoverSrc: (trackId: string) => string;
+  getTrackAudioSrc: (trackIds: string[]) => string[];
 }

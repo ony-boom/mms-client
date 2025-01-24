@@ -5,22 +5,24 @@ import { Input } from "@/components/ui/input.tsx";
 import { useApiClient, useDebounce } from "@/hooks";
 import { TracksGrid } from "./components/tracks-grid";
 import { TrackMenuSort } from "./components/track-menu-sort";
-import { ChangeEventHandler, useEffect, useState } from "react";
+import { ChangeEventHandler, useState } from "react";
 
 export function Tracks() {
   const [trackSort, setTrackSort] = useState<TrackSortField>();
   const [trackSearch, setTrackSearch] = useState("");
-  const debouncedSearch = useDebounce(trackSearch);
+  const debouncedSearch = useDebounce(trackSearch, 250);
   const api = useApiClient();
 
   const { isLoading, data } = api.useTracks(
     {
       title: debouncedSearch,
     },
-    trackSort && {
-      field: trackSort,
-      order: SortOrder.ASC,
-    },
+    trackSort
+      ? {
+          field: trackSort,
+          order: SortOrder.ASC,
+        }
+      : undefined,
   );
 
   const onSortChange = (sort: TrackSortField) => {
@@ -30,8 +32,6 @@ export function Tracks() {
   const onTrackSearchChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setTrackSearch(event.target.value);
   };
-
-  useEffect(() => {}, [trackSearch]);
 
   return (
     <>
@@ -44,10 +44,7 @@ export function Tracks() {
               value={trackSearch}
               placeholder="Search..."
             />
-            <TrackMenuSort
-              value={trackSort ?? ""}
-              onValueChange={onSortChange}
-            />
+            <TrackMenuSort value={trackSort} onValueChange={onSortChange} />
           </div>
         }
       />
