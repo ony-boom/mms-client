@@ -29,7 +29,7 @@ function Layout() {
 
           <Player
             className={cn(
-              "border-border fixed bottom-0 z-50 min-h-[105px] w-full -translate-x-[20px] rounded-t-lg border-t px-6 pr-[calc(var(--spacing)*4+var(--sidebar-width-icon))] transition-all",
+              "border-border sticky bottom-0 z-50 min-h-[105px] w-full rounded-t-lg border-t px-6 pr-[calc(var(--spacing)*4+var(--sidebar-width-icon))] transition-all",
               sidebarOpenState &&
                 "pr-[calc(var(--spacing)*4+var(--sidebar-width))]",
             )}
