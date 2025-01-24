@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils.ts";
 import "@fontsource/manrope/index.css";
 import { Outlet } from "react-router";
 import { AppSidebar, Player } from "@/components";
-import { ApiContext } from "@/context/ApiContext.ts";
+import { ApiContext } from "@/context/api-context";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 function Layout() {
@@ -33,7 +33,7 @@ function Layout() {
               paddingRight: `calc(100% - ${sidebarOpenState ? "var(--sidebar-width)" : "var(--sidebar-width-icon)"})`,
             }}
             className={cn(
-              "fixed bottom-0 z-50 h-12 w-full -translate-x-[20px] border-t border-border bg-background px-4 transition-all",
+              "border-border bg-background fixed bottom-0 z-50 h-12 w-full -translate-x-[20px] border-t px-4 transition-all",
             )}
           />
         </main>
