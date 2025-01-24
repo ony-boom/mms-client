@@ -1,32 +1,52 @@
 import { Track } from "@/api";
-import { Play } from "lucide-react";
+import { usePlayerState } from "@/stores";
 import { TrackCover } from "./track-cover";
+import { Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useApiClient } from "@/hooks";
 
 export function TrackCard({ track }: TrackCardProps) {
   const artistNames = track.artists.map((artist) => artist.name).join(", ");
+  const player = usePlayerState();
+  const { getTrackAudioSrc } = useApiClient();
+
+  const isCurrent = track.id === player.currentTrackId;
+
+  const onPlayButtonClick = async () => {
+    if (!isCurrent) {
+      player.setSrc(track.id, (id) => getTrackAudioSrc([id])[0]);
+      player.play();
+      return;
+    }
+    player.toggle();
+  };
 
   return (
     <div className="group relative flex flex-col gap-1">
-      <TrackCover trackId={track.id} trackTitle={track.title} />
+      <TrackCover
+        className="mb-2"
+        trackId={track.id}
+        trackTitle={track.title}
+      />
       <p
         title={track.title}
-        className="overflow-hidden text-ellipsis text-nowrap font-bold"
+        className="overflow-hidden font-bold text-nowrap text-ellipsis"
       >
         {track.title}
       </p>
       <p
         title={artistNames}
-        className="overflow-hidden text-ellipsis text-nowrap text-sm"
+        className="overflow-hidden text-sm text-nowrap text-ellipsis"
       >
         {artistNames}
       </p>
 
       <Button
         size="icon"
-        className="absolute bottom-16 right-4 z-20 opacity-0 shadow-xl transition group-hover:opacity-100"
+        onClick={onPlayButtonClick}
+        className="absolute right-4 bottom-16 z-20 opacity-0 shadow-xl transition group-hover:opacity-100"
       >
-        <Play />
+        {isCurrent && player.isPlaying ? <Pause /> : <Play />}
       </Button>
     </div>
   );

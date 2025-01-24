@@ -28,12 +28,10 @@ function Layout() {
           <Outlet />
 
           <Player
-            style={{
-              // changing the width is weird, so we're changing the padding instead. I don't know how to do it with tailwind.
-              paddingRight: `calc(100% - ${sidebarOpenState ? "var(--sidebar-width)" : "var(--sidebar-width-icon)"})`,
-            }}
             className={cn(
-              "border-border bg-background fixed bottom-0 z-50 h-12 w-full -translate-x-[20px] border-t px-4 transition-all",
+              "border-border fixed bottom-0 z-50 min-h-[105px] w-full -translate-x-[20px] rounded-t-lg border-t px-6 pr-[calc(var(--spacing)*4+var(--sidebar-width-icon))] transition-all",
+              sidebarOpenState &&
+                "pr-[calc(var(--spacing)*4+var(--sidebar-width))]",
             )}
           />
         </main>
