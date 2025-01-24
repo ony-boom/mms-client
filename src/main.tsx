@@ -1,4 +1,4 @@
-import Layout from "./Layout";
+import Layout from "./layout";
 import { StrictMode } from "react";
 import { AppRoutes } from "./route.types";
 import { Home, Tracks, Albums } from "./pages";

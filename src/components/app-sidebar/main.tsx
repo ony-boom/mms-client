@@ -32,7 +32,7 @@ export function AppSidebar() {
                         asChild
                         className={clsx(
                           {
-                            "!bg-primary/10 !text-primary": isActive,
+                            "bg-primary/10! text-primary!": isActive,
                           },
                           "transition-colors duration-300 hover:bg-primary/5 hover:text-primary",
                         )}
