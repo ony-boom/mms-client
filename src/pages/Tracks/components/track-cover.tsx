@@ -16,7 +16,7 @@ export function TrackCover({
     <div
       {...rest}
       className={cn(
-        "aspect-square w-full max-w-[456px] overflow-hidden rounded-lg",
+        "aspect-square w-full max-w-[456px] overflow-hidden rounded",
         className,
       )}
     >

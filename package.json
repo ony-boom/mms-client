@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
+    "fast-shuffle": "^6.1.1",
     "graphql": "^16.10.0",
     "lucide-react": "^0.473.0",
     "postcss": "^8.5.1",

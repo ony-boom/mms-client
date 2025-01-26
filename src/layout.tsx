@@ -28,7 +28,7 @@ function Layout() {
             <Outlet />
           </div>
 
-          <Player className="bg-background/80 backdrop:saturate-150 sticky bottom-4 z-50 mx-auto min-h-[81px] w-max min-w-sm overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl transition-all" />
+          <Player className="bg-background/80 sticky bottom-4 z-50 mx-auto min-h-[81px] w-max min-w-sm overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl transition-all backdrop:saturate-150" />
         </main>
       </SidebarProvider>
     </ApiContext.Provider>

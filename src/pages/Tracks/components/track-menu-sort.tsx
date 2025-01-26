@@ -41,14 +41,19 @@ export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button role="combobox" size={"sm"} aria-expanded={open} className="rounded-full justify-between">
+        <Button
+          role="combobox"
+          size={"sm"}
+          aria-expanded={open}
+          className="justify-between rounded-full"
+        >
           {value
             ? sortFields.find((framework) => framework.value === value)?.label
             : "Sort by"}
           <SortAsc className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-max p-0 mt-2">
+      <PopoverContent className="mt-2 w-max p-0">
         <Command>
           <CommandList>
             <CommandGroup>

@@ -12,6 +12,7 @@ export function TrackCard({ track, index }: TrackCardProps) {
 
   const onPlayButtonClick = async () => {
     if (!isCurrent) {
+      player.toggleShuffle(false);
       player.playTrackAtIndex(index);
       return;
     }

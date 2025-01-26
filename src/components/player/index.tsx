@@ -17,8 +17,18 @@ import { TrackCover } from "@/pages/Tracks/components/track-cover";
 
 export function Player({ className, ...rest }: PlayerProps) {
   const { useTracks } = useApiClient();
-  const { isPlaying, src, currentTrackId, toggle, playNext, playPrev } =
-    usePlayerState();
+  const {
+    isPlaying,
+    src,
+    currentTrackId,
+    toggle,
+    playNext,
+    playPrev,
+    toggleShuffle,
+    isShuffle,
+    hasNext,
+    hasPrev,
+  } = usePlayerState();
   const audioRef = useRef<ElementRef<"audio">>(null);
 
   const { data } = useTracks({
@@ -26,6 +36,10 @@ export function Player({ className, ...rest }: PlayerProps) {
   });
 
   const currentTrack = data?.length === 1 ? data[0] : undefined;
+
+  const handleShuffle = () => {
+    toggleShuffle();
+  };
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -77,10 +91,20 @@ export function Player({ className, ...rest }: PlayerProps) {
             <Button disabled size="icon" variant="ghost">
               <Heart />
             </Button>
-            <Button disabled size="icon" variant="ghost">
+            <Button
+              onClick={handleShuffle}
+              className={isShuffle ? "text-foreground" : "text-foreground/50"}
+              size="icon"
+              variant="ghost"
+            >
               <Shuffle />
             </Button>
-            <Button onClick={playPrev} size="icon" variant="ghost">
+            <Button
+              onClick={playPrev}
+              disabled={!hasPrev()}
+              size="icon"
+              variant="ghost"
+            >
               <SkipBack />
             </Button>
             <Button
@@ -93,7 +117,7 @@ export function Player({ className, ...rest }: PlayerProps) {
             </Button>
             <Button
               onClick={playNext}
-              disabled={!currentTrack}
+              disabled={!hasNext()}
               size="icon"
               variant="ghost"
             >

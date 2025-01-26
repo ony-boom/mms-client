@@ -34,7 +34,7 @@ export function AppSidebar() {
                           {
                             "bg-primary/10! text-primary!": isActive,
                           },
-                          "transition-colors duration-300 hover:bg-primary/5 hover:text-primary",
+                          "hover:bg-primary/5 hover:text-primary transition-colors duration-300",
                         )}
                         tooltip={item.title}
                       >

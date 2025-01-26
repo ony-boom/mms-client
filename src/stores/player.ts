@@ -1,14 +1,19 @@
 import { create } from "zustand";
+import { shuffle as arrayShuffle } from "fast-shuffle";
+
+type Playlist = {
+  id: string;
+  src: string;
+};
 
 export interface PlayerState {
   src?: string;
   position: number;
   isPlaying: boolean;
   duration: number;
-  playlists: {
-    id: string;
-    src: string;
-  }[];
+  isShuffle: boolean;
+  playlists: Playlist[];
+  shuffledPlaylists: Playlist[];
 
   playingIndex: number;
   currentTrackId?: string;
@@ -17,13 +22,17 @@ export interface PlayerState {
   setPosition: (position: number) => void;
   setIsPlaying: (isPlaying: boolean) => void;
   setDuration: (duration: number) => void;
-  setPlaylists: (playlists: { id: string; src: string }[]) => void;
+  setPlaylists: (playlists: Playlist[]) => void;
+  getCurrentPlaylist: () => Playlist[];
 
   play: () => void;
   pause: () => void;
   toggle: () => void;
   playNext: () => void;
   playPrev: () => void;
+  hasPrev: () => boolean;
+  hasNext: () => boolean;
+  toggleShuffle: (value?: boolean) => void;
   playTrackAtIndex: (index: number) => void;
 }
 
@@ -32,9 +41,11 @@ export const usePlayerState = create<PlayerState>((set, get) => {
     duration: 1,
     position: 0,
     playlists: [],
+    shuffledPlaylists: [],
     src: undefined,
     playingIndex: 0,
     isPlaying: false,
+    isShuffle: false,
     currentTrackId: undefined,
 
     setSrc: (src) => {
@@ -57,6 +68,7 @@ export const usePlayerState = create<PlayerState>((set, get) => {
       set({ playlists });
     },
 
+
     play: () => {
       set({ isPlaying: true });
     },
@@ -69,10 +81,29 @@ export const usePlayerState = create<PlayerState>((set, get) => {
       set((state) => ({ isPlaying: !state.isPlaying }));
     },
 
+    toggleShuffle: (value) => {
+      set((state) => {
+        const baseValue = value ?? !state.isShuffle;
+
+        if (baseValue) {
+          const shuffledPlaylists = arrayShuffle(state.playlists);
+          return { isShuffle: baseValue, shuffledPlaylists };
+        }
+
+        return { isShuffle: baseValue, shuffledPlaylists: [] };
+      });
+    },
+
+    getCurrentPlaylist() {
+      return get().isShuffle ? get().shuffledPlaylists : get().playlists;
+    },
+
     playTrackAtIndex: (index) => {
       set({ playingIndex: index });
-      get().setSrc(get().playlists[index].src);
-      set({ currentTrackId: get().playlists[index].id });
+      const playlist = get().getCurrentPlaylist();
+
+      get().setSrc(playlist[index].src);
+      set({ currentTrackId: playlist[index].id });
       set({ isPlaying: true });
     },
 
@@ -90,6 +121,14 @@ export const usePlayerState = create<PlayerState>((set, get) => {
         return;
       }
       get().playTrackAtIndex(prevIndex);
+    },
+
+    hasPrev: () => {
+      return get().playingIndex > 0;
+    },
+
+    hasNext: () => {
+      return get().playingIndex < get().getCurrentPlaylist().length - 1;
     },
   };
 });
