@@ -1,7 +1,7 @@
 import { Track } from "@/api";
 import { usePlayerState } from "@/stores";
 import { useApiClient } from "@/hooks";
-import { ReactEventHandler, useCallback, forwardRef } from "react";
+import { ReactEventHandler, useCallback, forwardRef, useEffect } from "react";
 
 export const Audio = forwardRef<HTMLAudioElement, AudioProps>(
   ({ currentTrack }, ref) => {
@@ -14,6 +14,7 @@ export const Audio = forwardRef<HTMLAudioElement, AudioProps>(
       pause,
       play,
       playNext,
+      playPrev,
     } = usePlayerState();
 
     const updateNavigatorMetadata = useCallback(() => {
@@ -46,6 +47,11 @@ export const Audio = forwardRef<HTMLAudioElement, AudioProps>(
       setDuration(audioElement.duration);
       updateNavigatorMetadata();
     };
+
+    useEffect(() => {
+      navigator.mediaSession.setActionHandler("previoustrack", playPrev)
+      navigator.mediaSession.setActionHandler("nexttrack", playNext);
+    }, []);
 
     return (
       <audio

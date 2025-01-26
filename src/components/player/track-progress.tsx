@@ -9,6 +9,7 @@ export const TrackProgress = ({
 }: TrackProgressProps) => {
   const { position, duration } = usePlayerState();
   const progress = (position * 100) / duration;
+
   const onProgressClick: MouseEventHandler<HTMLDivElement> = (event) => {
     if (!audioRef.current || !currentTrack) return;
 
