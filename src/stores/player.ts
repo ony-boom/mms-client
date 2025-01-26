@@ -4,6 +4,7 @@ import { shuffle as arrayShuffle } from "fast-shuffle";
 type Playlist = {
   id: string;
   src: string;
+  baseIndex: number;
 };
 
 export interface PlayerState {
@@ -24,6 +25,7 @@ export interface PlayerState {
   setDuration: (duration: number) => void;
   setPlaylists: (playlists: Playlist[]) => void;
   getCurrentPlaylist: () => Playlist[];
+  setPlayingIndex: (index: number) => void;
 
   play: () => void;
   pause: () => void;
@@ -68,6 +70,9 @@ export const usePlayerState = create<PlayerState>((set, get) => {
       set({ playlists });
     },
 
+    setPlayingIndex: (index) => {
+      set({ playingIndex: index });
+    },
 
     play: () => {
       set({ isPlaying: true });
@@ -90,7 +95,7 @@ export const usePlayerState = create<PlayerState>((set, get) => {
           return { isShuffle: baseValue, shuffledPlaylists };
         }
 
-        return { isShuffle: baseValue, shuffledPlaylists: [] };
+        return { isShuffle: baseValue };
       });
     },
 

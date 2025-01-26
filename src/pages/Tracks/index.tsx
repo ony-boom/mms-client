@@ -40,8 +40,9 @@ export function Tracks() {
   useEffect(() => {
     if (data) {
       setPlaylists(
-        data.map((track) => ({
+        data.map((track, index) => ({
           id: track.id,
+          baseIndex: index,
           src: getTrackAudioSrc([track.id])[0],
         })),
       );

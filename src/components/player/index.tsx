@@ -28,6 +28,7 @@ export function Player({ className, ...rest }: PlayerProps) {
     isShuffle,
     hasNext,
     hasPrev,
+    ...player
   } = usePlayerState();
   const audioRef = useRef<ElementRef<"audio">>(null);
 
@@ -55,10 +56,24 @@ export function Player({ className, ...rest }: PlayerProps) {
     }
   }, [isPlaying, src]);
 
+  useEffect(() => {
+    if (!isShuffle) {
+      const previousPlayedIndex =
+        player.shuffledPlaylists[player.playingIndex]?.baseIndex;
+      if (previousPlayedIndex) player.setPlayingIndex(previousPlayedIndex);
+    }
+  }, [isShuffle]);
+
   return (
     <>
       <Audio currentTrack={currentTrack} ref={audioRef} />
-      <div className={cn(className)} {...rest}>
+      <div
+        className={cn(
+          className,
+          "bg-background/80 sticky bottom-4 z-50 mx-auto min-h-[81px] w-max min-w-sm overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl transition-all backdrop:saturate-150",
+        )}
+        {...rest}
+      >
         <div className="relative flex items-center justify-between gap-16 p-2 pb-3">
           <div aria-labelledby="track info" className="flex items-end gap-4">
             {currentTrack ? (

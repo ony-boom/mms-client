@@ -1,31 +1,81 @@
-import { useRef, useEffect, useState, HTMLProps } from "react";
+import {
+  useRef,
+  useEffect,
+  useState,
+  ReactNode,
+  ElementRef,
+  ImgHTMLAttributes,
+} from "react";
+import { cn } from "@/lib/utils";
 
-export function Cover({ src: baseSrc, alt }: CoverProps) {
+interface CoverProps extends ImgHTMLAttributes<HTMLImageElement> {
+  src: string;
+  placeholder?: ReactNode;
+  threshold?: number;
+}
+
+export function Cover({
+  src: baseSrc,
+  alt,
+  placeholder,
+  threshold = 0.05,
+  className = "",
+  ...imgProps
+}: CoverProps) {
   const [src, setSrc] = useState("");
-  const imageContainerRef = useRef<HTMLDivElement>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const imageContainerRef = useRef<ElementRef<"div">>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setSrc(baseSrc);
-        observer.unobserve(entry.target);
-      }
-    });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSrc(baseSrc);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold },
+    );
 
-    if (imageContainerRef.current) {
-      observer.observe(imageContainerRef.current);
+    const currentElement = imageContainerRef.current;
+    if (currentElement) {
+      observer.observe(currentElement);
     }
 
-    return () => observer.disconnect();
-  }, [baseSrc]);
+    return () => {
+      if (currentElement) {
+        observer.unobserve(currentElement);
+      }
+      observer.disconnect();
+    };
+  }, [baseSrc, threshold]);
+
+  const handleImageLoad = () => {
+    setIsLoaded(true);
+  };
 
   return (
-    <div ref={imageContainerRef}>
+    <div
+      ref={imageContainerRef}
+      className={`relative overflow-hidden ${className}`}
+    >
       {src && (
-        <img loading="lazy" className="animate-fade-in" src={src} alt={alt} />
+        <img
+          {...imgProps}
+          loading="lazy"
+          src={src}
+          alt={alt}
+          onLoad={handleImageLoad}
+          className={cn(
+            "h-full w-full object-cover",
+            isLoaded ? "animate-fade-in opacity-100" : "opacity-0",
+            className,
+          )}
+        />
+      )}
+      {!isLoaded && placeholder && (
+        <div className="absolute inset-0 h-full w-full">{placeholder}</div>
       )}
     </div>
   );
 }
-
-export type CoverProps = HTMLProps<HTMLImageElement> & { src: string };

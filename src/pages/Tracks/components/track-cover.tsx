@@ -2,6 +2,7 @@ import { useApiClient } from "@/hooks";
 import { Cover } from "@/components/cover";
 import { HTMLProps } from "react";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function TrackCover({
   trackId,
@@ -20,7 +21,12 @@ export function TrackCover({
         className,
       )}
     >
-      <Cover src={src} alt={trackTitle} className="h-full w-full" />
+      <Cover
+        src={src}
+        alt={trackTitle}
+        className="h-full w-full"
+        placeholder={<Skeleton className="h-full w-full" />}
+      />
     </div>
   );
 }
