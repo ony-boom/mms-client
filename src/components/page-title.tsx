@@ -1,15 +1,23 @@
 import { ReactNode } from "react";
+import { cn } from "@/lib/utils.ts";
 
 export function PageTitle({
   title,
   menu,
+  sticky,
 }: {
   title: ReactNode;
   menu?: ReactNode;
+  sticky?: boolean;
 }) {
   return (
-    <nav className="sticky top-0 z-30 flex items-center justify-between bg-background py-3">
-      <h1 className="text-lg font-bold text-primary">{title}</h1>
+    <nav
+      className={cn(
+        "bg-background z-30 flex items-center justify-between py-3",
+        sticky && "sticky top-0",
+      )}
+    >
+      <h1 className="text-primary text-lg font-bold">{title}</h1>
 
       {menu && menu}
     </nav>

@@ -1,6 +1,5 @@
 import "./styles/main.css";
 import { useState } from "react";
-import { cn } from "@/lib/utils.ts";
 import "@fontsource/manrope/index.css";
 import { Outlet } from "react-router";
 import { AppSidebar, Player } from "@/components";
@@ -24,16 +23,12 @@ function Layout() {
         onOpenChange={handleSidebarOpenChange}
       >
         <AppSidebar />
-        <main className="ml-1 w-full px-4 pb-4">
-          <Outlet />
+        <main className="ml-1 w-full">
+          <div className="mb-2 min-h-screen">
+            <Outlet />
+          </div>
 
-          <Player
-            className={cn(
-              "border-border sticky bottom-0 z-50 min-h-[105px] w-full rounded-t-lg border-t px-6 pr-[calc(var(--spacing)*4+var(--sidebar-width-icon))] transition-all",
-              sidebarOpenState &&
-                "pr-[calc(var(--spacing)*4+var(--sidebar-width))]",
-            )}
-          />
+          <Player className="bg-background/80 backdrop:saturate-150 sticky bottom-4 z-50 mx-auto min-h-[81px] w-max min-w-sm overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl transition-all" />
         </main>
       </SidebarProvider>
     </ApiContext.Provider>

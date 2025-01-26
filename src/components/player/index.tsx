@@ -1,18 +1,23 @@
 import { cn } from "@/lib/utils.ts";
 import { useApiClient } from "@/hooks";
 import { usePlayerState } from "@/stores";
+import { type ElementRef, HTMLProps, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button.tsx";
 import {
-  HTMLProps,
-  useRef,
-  type ElementRef,
-  useEffect,
-  ReactEventHandler,
-} from "react";
+  Heart,
+  Pause,
+  Play,
+  Shuffle,
+  SkipBack,
+  SkipForward,
+} from "lucide-react";
+import { Audio } from "./audio";
+import { TrackProgress } from "./track-progress";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
 
 export function Player({ className, ...rest }: PlayerProps) {
   const { useTracks } = useApiClient();
-  const { isPlaying, src, currentTrackId, setPosition, pause, play } =
+  const { isPlaying, src, currentTrackId, toggle, playNext, playPrev } =
     usePlayerState();
   const audioRef = useRef<ElementRef<"audio">>(null);
 
@@ -20,38 +25,32 @@ export function Player({ className, ...rest }: PlayerProps) {
     id: currentTrackId,
   });
 
-  const currentTrack = data?.at(0);
-
-  const onTimeUpdate: ReactEventHandler<HTMLAudioElement> = (event) => {
-    setPosition((event.target as HTMLAudioElement).currentTime);
-  };
+  const currentTrack = data?.length === 1 ? data[0] : undefined;
 
   useEffect(() => {
     if (!audioRef.current) return;
     const audioElement = audioRef.current;
+
     if (isPlaying) {
-      audioElement.play().then();
+      audioElement.play().then(() => {
+        navigator.mediaSession.playbackState = "playing";
+      });
     } else {
       audioElement.pause();
+      navigator.mediaSession.playbackState = "paused";
     }
   }, [isPlaying, src]);
 
   return (
     <>
-      <audio
-        src={src}
-        onPlay={play}
-        ref={audioRef}
-        onPause={pause}
-        onTimeUpdate={onTimeUpdate}
-      />
-      <div className={cn("bg-background py-4", className)} {...rest}>
-        <div className="flex">
+      <Audio currentTrack={currentTrack} ref={audioRef} />
+      <div className={cn(className)} {...rest}>
+        <div className="relative flex items-center justify-between gap-16 p-2 pb-3">
           <div aria-labelledby="track info" className="flex items-end gap-4">
             {currentTrack ? (
               <>
                 <TrackCover
-                  className="w-[72px]"
+                  className="w-[72px] rounded-xl"
                   trackId={currentTrack.id!}
                   trackTitle={currentTrack.title}
                 />
@@ -59,11 +58,11 @@ export function Player({ className, ...rest }: PlayerProps) {
                 <div className="animate-fade-in">
                   <p
                     title={currentTrack.title}
-                    className="overflow-hidden font-bold text-nowrap text-ellipsis"
+                    className="max-w-[180px] overflow-hidden font-bold text-nowrap text-ellipsis"
                   >
                     {currentTrack.title}
                   </p>
-                  <small>
+                  <small className="max-w-[180px] overflow-hidden text-nowrap text-ellipsis">
                     {currentTrack.artists
                       .map((artist) => artist.name)
                       .join(", ")}
@@ -71,9 +70,37 @@ export function Player({ className, ...rest }: PlayerProps) {
                 </div>
               </>
             ) : (
-              <div className="bg-muted aspect-square w-[72px]"></div>
+              <div className="bg-muted aspect-square w-[72px] rounded-xl"></div>
             )}
           </div>
+          <div aria-labelledby="controller" className="flex items-center gap-2">
+            <Button disabled size="icon" variant="ghost">
+              <Heart />
+            </Button>
+            <Button disabled size="icon" variant="ghost">
+              <Shuffle />
+            </Button>
+            <Button onClick={playPrev} size="icon" variant="ghost">
+              <SkipBack />
+            </Button>
+            <Button
+              disabled={!currentTrack}
+              onClick={toggle}
+              size="icon"
+              className="rounded-full"
+            >
+              {isPlaying ? <Pause /> : <Play />}
+            </Button>
+            <Button
+              onClick={playNext}
+              disabled={!currentTrack}
+              size="icon"
+              variant="ghost"
+            >
+              <SkipForward />
+            </Button>
+          </div>
+          <TrackProgress audioRef={audioRef} currentTrack={currentTrack} />
         </div>
       </div>
     </>

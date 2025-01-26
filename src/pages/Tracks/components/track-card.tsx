@@ -3,19 +3,16 @@ import { usePlayerState } from "@/stores";
 import { TrackCover } from "./track-cover";
 import { Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useApiClient } from "@/hooks";
 
-export function TrackCard({ track }: TrackCardProps) {
+export function TrackCard({ track, index }: TrackCardProps) {
   const artistNames = track.artists.map((artist) => artist.name).join(", ");
   const player = usePlayerState();
-  const { getTrackAudioSrc } = useApiClient();
 
   const isCurrent = track.id === player.currentTrackId;
 
   const onPlayButtonClick = async () => {
     if (!isCurrent) {
-      player.setSrc(track.id, (id) => getTrackAudioSrc([id])[0]);
-      player.play();
+      player.playTrackAtIndex(index);
       return;
     }
     player.toggle();
@@ -44,7 +41,7 @@ export function TrackCard({ track }: TrackCardProps) {
       <Button
         size="icon"
         onClick={onPlayButtonClick}
-        className="absolute right-4 bottom-16 z-20 opacity-0 shadow-xl transition group-hover:opacity-100"
+        className="absolute right-2 bottom-[68px] z-20 opacity-0 shadow-xl transition group-hover:opacity-100"
       >
         {isCurrent && player.isPlaying ? <Pause /> : <Play />}
       </Button>
@@ -54,4 +51,5 @@ export function TrackCard({ track }: TrackCardProps) {
 
 type TrackCardProps = {
   track: Track;
+  index: number;
 };

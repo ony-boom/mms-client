@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, SortAsc } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -41,19 +41,14 @@ export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
+        <Button role="combobox" size={"sm"} aria-expanded={open} className="rounded-full justify-between">
           {value
             ? sortFields.find((framework) => framework.value === value)?.label
             : "Sort by"}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <SortAsc className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-max p-0">
+      <PopoverContent className="w-max p-0 mt-2">
         <Command>
           <CommandList>
             <CommandGroup>
