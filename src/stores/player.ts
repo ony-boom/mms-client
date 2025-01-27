@@ -75,15 +75,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       { length: playlists.length },
       (_, i) => i,
     );
-    const firstTrack = playlists[0];
     set({
       playlists,
       shuffleIndices,
-      playingIndex: 0,
-      currentTrackId: firstTrack?.id,
-      src: firstTrack?.src,
-      isPlaying: false,
-      position: 0,
     });
   },
 
@@ -112,45 +106,30 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   pause: () => set({ isPlaying: false }),
   toggle: () => set((state) => ({ isPlaying: !state.isPlaying })),
 
-  toggleShuffle: (value?: boolean) => {
-    set((state) => {
-      const newShuffleState = value ?? !state.isShuffle;
-      const currentTrack = state.getCurrentTrack();
+  toggleShuffle: (value) => {
+    const { playlists, getCurrentTrack } = get();
+    const currentTrack = getCurrentTrack();
+    const isShuffle = value ?? !get().isShuffle;
 
-      if (!currentTrack) return { isShuffle: newShuffleState };
+    if (!currentTrack) return set({ isShuffle });
 
-      if (newShuffleState) {
-        const currentIndex = state.playlists.findIndex(
-          (track) => track.id === currentTrack.id,
-        );
-
-        const indices = Array.from(
-          { length: state.playlists.length },
-          (_, i) => i,
-        );
-        indices.splice(currentIndex, 1);
-
-        const shuffledRemaining = arrayShuffle(indices);
-        shuffledRemaining.unshift(currentIndex);
-
-        return {
-          isShuffle: true,
-          shuffleIndices: shuffledRemaining,
-          playingIndex: currentIndex,
-        };
-      }
-
-      // When disabling shuffle, find the original index of current track
-      const originalIndex = state.playlists.findIndex(
+    if (isShuffle) {
+      const currentIndex = playlists.findIndex(
         (track) => track.id === currentTrack.id,
       );
+      const indices = Array.from({ length: playlists.length }, (_, i) => i);
+      indices.splice(currentIndex, 1);
 
-      return {
-        isShuffle: false,
-        playingIndex: originalIndex >= 0 ? originalIndex : 0,
+      set({
+        isShuffle,
+        shuffleIndices: [currentIndex, ...arrayShuffle(indices)],
+      });
+    } else {
+      set({
+        isShuffle,
         shuffleIndices: [],
-      };
-    });
+      });
+    }
   },
 
   playAtRandom: () => {

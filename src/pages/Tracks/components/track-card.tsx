@@ -22,7 +22,7 @@ export function TrackCard({ track, index }: TrackCardProps) {
   return (
     <div className="group relative flex flex-col gap-1">
       <TrackCover
-        className="mb-2"
+        className="mb-2 max-w-[256px]"
         trackId={track.id}
         trackTitle={track.title}
       />
