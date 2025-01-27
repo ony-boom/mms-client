@@ -1,12 +1,12 @@
 import { Track } from "@/api";
-import { usePlayerState } from "@/stores";
+import { usePlayerStore } from "@/stores";
 import { TrackCover } from "./track-cover";
 import { Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function TrackCard({ track, index }: TrackCardProps) {
   const artistNames = track.artists.map((artist) => artist.name).join(", ");
-  const player = usePlayerState();
+  const player = usePlayerStore();
 
   const isCurrent = track.id === player.currentTrackId;
 

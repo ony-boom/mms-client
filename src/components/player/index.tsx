@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils.ts";
 import { useApiClient } from "@/hooks";
-import { usePlayerState } from "@/stores";
+import { usePlayerStore } from "@/stores";
 import { type ElementRef, HTMLProps, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import {
@@ -14,6 +14,7 @@ import {
 import { Audio } from "./audio";
 import { TrackProgress } from "./track-progress";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
 
 export function Player({ className, ...rest }: PlayerProps) {
   const { useTracks } = useApiClient();
@@ -28,8 +29,7 @@ export function Player({ className, ...rest }: PlayerProps) {
     isShuffle,
     hasNext,
     hasPrev,
-    ...player
-  } = usePlayerState();
+  } = usePlayerStore();
   const audioRef = useRef<ElementRef<"audio">>(null);
 
   const { data } = useTracks({
@@ -56,21 +56,13 @@ export function Player({ className, ...rest }: PlayerProps) {
     }
   }, [isPlaying, src]);
 
-  useEffect(() => {
-    if (!isShuffle) {
-      const previousPlayedIndex =
-        player.shuffledPlaylists[player.playingIndex]?.baseIndex;
-      if (previousPlayedIndex) player.setPlayingIndex(previousPlayedIndex);
-    }
-  }, [isShuffle]);
-
   return (
     <>
       <Audio currentTrack={currentTrack} ref={audioRef} />
       <div
         className={cn(
           className,
-          "bg-background/80 sticky bottom-4 z-50 mx-auto min-h-[81px] w-max min-w-sm overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl transition-all backdrop:saturate-150",
+          "bg-background/80 sticky bottom-4 z-50 mx-auto min-h-[81px] w-max overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl transition-all backdrop:saturate-150",
         )}
         {...rest}
       >
@@ -87,11 +79,11 @@ export function Player({ className, ...rest }: PlayerProps) {
                 <div className="animate-fade-in">
                   <p
                     title={currentTrack.title}
-                    className="max-w-[180px] overflow-hidden font-bold text-nowrap text-ellipsis"
+                    className="w-[128px] overflow-hidden font-bold text-nowrap text-ellipsis"
                   >
                     {currentTrack.title}
                   </p>
-                  <small className="max-w-[180px] overflow-hidden text-nowrap text-ellipsis">
+                  <small className="w-[128px] overflow-hidden text-nowrap text-ellipsis">
                     {currentTrack.artists
                       .map((artist) => artist.name)
                       .join(", ")}
@@ -99,7 +91,13 @@ export function Player({ className, ...rest }: PlayerProps) {
                 </div>
               </>
             ) : (
-              <div className="bg-muted aspect-square w-[72px] rounded-xl"></div>
+              <div className="flex items-end gap-4">
+                <div className="bg-muted aspect-square w-[72px] rounded-xl"></div>
+                <div>
+                  <Skeleton className="w-[128px]" />
+                  <Skeleton className="w-[128px]" />
+                </div>
+              </div>
             )}
           </div>
           <div aria-labelledby="controller" className="flex items-center gap-2">

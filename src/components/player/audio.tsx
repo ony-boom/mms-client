@@ -1,5 +1,5 @@
 import { Track } from "@/api";
-import { usePlayerState } from "@/stores";
+import { usePlayerStore } from "@/stores";
 import { useApiClient } from "@/hooks";
 import { ReactEventHandler, useCallback, forwardRef, useEffect } from "react";
 
@@ -15,7 +15,7 @@ export const Audio = forwardRef<HTMLAudioElement, AudioProps>(
       play,
       playNext,
       playPrev,
-    } = usePlayerState();
+    } = usePlayerStore();
 
     const updateNavigatorMetadata = useCallback(() => {
       navigator.mediaSession.metadata = new MediaMetadata({

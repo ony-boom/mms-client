@@ -1,5 +1,5 @@
 import { Track } from "@/api";
-import { usePlayerState } from "@/stores";
+import { usePlayerStore } from "@/stores";
 import { MouseEventHandler, RefObject } from "react";
 import { Progress } from "@/components/ui/progress.tsx";
 
@@ -7,7 +7,7 @@ export const TrackProgress = ({
   audioRef,
   currentTrack,
 }: TrackProgressProps) => {
-  const { position, duration } = usePlayerState();
+  const { position, duration } = usePlayerStore();
   const progress = (position * 100) / duration;
 
   const onProgressClick: MouseEventHandler<HTMLDivElement> = (event) => {

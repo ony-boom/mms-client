@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button.tsx";
 import { ChangeEventHandler, useEffect, useState } from "react";
 import { TracksGrid } from "./components/tracks-grid";
 import { TrackMenuSort } from "./components/track-menu-sort";
-import { usePlayerState } from "@/stores";
+import { usePlayerStore } from "@/stores";
 
 export function Tracks() {
   const { useTracks, getTrackAudioSrc } = useApiClient();
-  const { setPlaylists, toggleShuffle, playTrackAtIndex } = usePlayerState();
+  const { setPlaylists, toggleShuffle, playAtRandom } = usePlayerStore();
   const [trackSearch, setTrackSearch] = useState("");
   const [trackSort, setTrackSort] = useState<TrackSortField>();
   const debouncedSearch = useDebounce(trackSearch, 250);
@@ -51,7 +51,7 @@ export function Tracks() {
 
   const handleShuffle = () => {
     toggleShuffle(true);
-    playTrackAtIndex(0);
+    playAtRandom();
   };
 
   return (
