@@ -4,7 +4,6 @@ import { shuffle as arrayShuffle } from "fast-shuffle";
 type Playlist = {
   id: string;
   src: string;
-  baseIndex: number;
 };
 
 interface PlayerState {
