@@ -28,6 +28,7 @@
     "cmdk": "1.0.0",
     "fast-shuffle": "^6.1.1",
     "graphql": "^16.10.0",
+    "graphql-sse": "^2.5.4",
     "lucide-react": "^0.473.0",
     "postcss": "^8.5.1",
     "react": "^18.3.1",

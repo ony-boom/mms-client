@@ -7,6 +7,8 @@ export type Track = {
   isFavorite?: boolean;
 };
 
+export type LoadedTracks = { current: number; total: number; };
+
 export type Artist = {
   id: string;
   name: string;

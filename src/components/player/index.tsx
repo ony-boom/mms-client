@@ -29,6 +29,7 @@ export function Player({ className, ...rest }: PlayerProps) {
     isShuffle,
     hasNext,
     hasPrev,
+    getCurrentPlaylist,
   } = usePlayerStore();
   const audioRef = useRef<ElementRef<"audio">>(null);
 
@@ -109,6 +110,7 @@ export function Player({ className, ...rest }: PlayerProps) {
               className={isShuffle ? "text-foreground" : "text-foreground/50"}
               size="icon"
               variant="ghost"
+              disabled={getCurrentPlaylist().length === 0}
             >
               <Shuffle />
             </Button>

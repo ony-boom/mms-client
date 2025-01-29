@@ -12,7 +12,8 @@ import { usePlayerStore } from "@/stores";
 
 export function Tracks() {
   const { useTracks, getTrackAudioSrc } = useApiClient();
-  const { setPlaylists, toggleShuffle, playAtRandom } = usePlayerStore();
+  const { setPlaylists, toggleShuffle, playAtRandom, getCurrentPlaylist } =
+    usePlayerStore();
   const [trackSearch, setTrackSearch] = useState("");
   const [trackSort, setTrackSort] = useState<TrackSortField>();
   const debouncedSearch = useDebounce(trackSearch, 250);
@@ -68,7 +69,12 @@ export function Tracks() {
           />
           <TrackMenuSort value={trackSort} onValueChange={onSortChange} />
 
-          <Button onClick={handleShuffle} size="sm" className="rounded-full">
+          <Button
+            disabled={getCurrentPlaylist().length === 0}
+            onClick={handleShuffle}
+            size="sm"
+            className="rounded-full"
+          >
             Shuffle <Shuffle className="h-4 w-4" />
           </Button>
         </div>

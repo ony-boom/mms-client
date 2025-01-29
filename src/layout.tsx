@@ -2,7 +2,7 @@ import "./styles/main.css";
 import { useState } from "react";
 import "@fontsource/manrope/index.css";
 import { Outlet } from "react-router";
-import { AppSidebar, Player } from "@/components";
+import { AppSidebar, Player, TrackLoadToast } from "@/components";
 import { ApiContext } from "@/context/api-context";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
@@ -29,6 +29,7 @@ function Layout() {
           </div>
 
           <Player />
+          <TrackLoadToast />
         </main>
       </SidebarProvider>
     </ApiContext.Provider>

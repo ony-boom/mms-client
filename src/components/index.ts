@@ -1,3 +1,4 @@
 export * from "./player";
+export * from "./page-title";
 export * from "./app-sidebar";
-export * from "./page-title.tsx";
+export * from "./track-load-toast";
