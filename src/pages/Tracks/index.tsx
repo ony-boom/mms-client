@@ -12,8 +12,12 @@ import { usePlayerStore } from "@/stores";
 
 export function Tracks() {
   const { useTracks, getTrackAudioSrc } = useApiClient();
-  const { setPlaylists, toggleShuffle, playAtRandom, getCurrentPlaylist } =
-    usePlayerStore();
+  const {
+    setPlaylists,
+    toggleShuffle,
+    getCurrentPlaylist,
+    playTrackAtIndex,
+  } = usePlayerStore();
   const [trackSearch, setTrackSearch] = useState("");
   const [trackSort, setTrackSort] = useState<TrackSortField>();
   const debouncedSearch = useDebounce(trackSearch, 250);
@@ -50,8 +54,8 @@ export function Tracks() {
   }, [data, getTrackAudioSrc, setPlaylists]);
 
   const handleShuffle = () => {
-    toggleShuffle(true);
-    playAtRandom();
+    toggleShuffle(true, true);
+    playTrackAtIndex(0);
   };
 
   return (
