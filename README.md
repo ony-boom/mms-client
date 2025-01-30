@@ -7,3 +7,8 @@ A web client for my music server (should work with any music server though)
 
 > [!NOTE]  
 > This is a WIP.
+
+
+### TODO
+
+- [ ] use virtualized list for the song list
