@@ -25,7 +25,7 @@ function Layout() {
       >
         <AppSidebar />
         <main className="ml-1 w-full">
-          <div className="mb-12 min-h-screen">
+          <div className="mb-12">
             <Outlet />
           </div>
 

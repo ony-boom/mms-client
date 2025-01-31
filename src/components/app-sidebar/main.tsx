@@ -9,7 +9,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  // SidebarTrigger,
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { AppRoutes } from "@/route.types";
@@ -55,9 +54,10 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <TrackLoadToast variant="ghost" />
+            <SidebarMenuButton asChild>
+              <TrackLoadToast variant="ghost" className="!w-max !p-0" />
+            </SidebarMenuButton>
           </SidebarMenuItem>
-          {/*<SidebarTrigger />*/}
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>

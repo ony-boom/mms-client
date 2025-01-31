@@ -5,6 +5,7 @@ import { RefreshCcw } from "lucide-react";
 import { CACHE_KEY } from "@/api/constant.ts";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button, type ButtonProps } from "@/components/ui/button.tsx";
+import { cn } from "@/lib/utils.ts";
 
 export const TrackLoadToast = (props: ButtonProps) => {
   const { useTrackLoadEvent, useLoadTracks } = useApiClient();
@@ -46,7 +47,12 @@ export const TrackLoadToast = (props: ButtonProps) => {
   ]);
 
   return (
-    <Button {...props} onClick={handleClick} size="icon" className="p-0">
+    <Button
+      {...props}
+      onClick={handleClick}
+      size="icon"
+      className={cn(props.className)}
+    >
       <RefreshCcw />
     </Button>
   );

@@ -31,6 +31,7 @@ interface PlayerStateActions {
   toggle: () => void;
   playNext: () => void;
   playPrev: () => void;
+  playAfter: (id: string) => void;
   hasPrev: () => boolean;
   hasNext: () => boolean;
   toggleShuffle: (value?: boolean, shuffleAll?: boolean) => void;
@@ -93,7 +94,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setPlaylists: (playlists) => {
     set({
       playlists,
-      // shuffleIndices: Array.from({ length: playlists.length }, (_, i) => i),
     });
   },
 
@@ -137,6 +137,29 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   playAtRandom: () =>
     get().playTrackAtIndex(Math.floor(Math.random() * get().playlists.length)),
+
+  playAfter: (id) => {
+    const state = get();
+    const currentPlaylist = state.getCurrentPlaylist();
+    const currentIndex = state.getCurrentIndex();
+
+    const sourceIndex = currentPlaylist.findIndex((track) => track.id === id);
+
+    if (sourceIndex === -1 || sourceIndex === currentIndex + 1) return;
+
+    const newPlaylist = [...currentPlaylist];
+    const [removedTrack] = newPlaylist.splice(sourceIndex, 1);
+    newPlaylist.splice(currentIndex + 1, 0, removedTrack);
+
+    if (state.isShuffle) {
+      const newShuffleIndices = newPlaylist.map((track) =>
+        state.playlists.findIndex((t) => t.id === track.id),
+      );
+      set({ shuffleIndices: newShuffleIndices });
+    } else {
+      set({ playlists: newPlaylist });
+    }
+  },
 
   playTrackAtIndex: (index) => {
     const state = get();
