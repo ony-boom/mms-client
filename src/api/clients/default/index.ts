@@ -2,10 +2,10 @@ import type { Api } from "@/api/Api";
 import { createClient } from "graphql-sse";
 import { useEffect, useState } from "react";
 import { LoadedTracks, Track } from "@/api";
+import { CACHE_KEY } from "@/api/constant.ts";
+import { axiosClient, BASE_URL } from "./axios-client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { GET_TRACKS, LOAD_TRACK, TRACK_LOAD } from "./queries";
-import { axiosClient, BASE_URL } from "./axios-client";
-import { CACHE_KEY } from "@/api/constant.ts";
 
 export const defaultApi: Api = {
   useTracks: (where, sortBy) => {

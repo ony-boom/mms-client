@@ -2,9 +2,9 @@ import { toast } from "sonner";
 import { useApiClient } from "@/hooks";
 import { useEffect, useState } from "react";
 import { RefreshCcw } from "lucide-react";
+import { CACHE_KEY } from "@/api/constant.ts";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button, type ButtonProps } from "@/components/ui/button.tsx";
-import { CACHE_KEY } from "@/api/constant.ts";
 
 export const TrackLoadToast = (props: ButtonProps) => {
   const { useTrackLoadEvent, useLoadTracks } = useApiClient();
@@ -15,9 +15,11 @@ export const TrackLoadToast = (props: ButtonProps) => {
 
   const handleClick = () => {
     loadTrackMutation.mutate(null, {
-      onSuccess: async () => {
+      onSuccess: async (reloaded) => {
         toast.success("Database up to date");
-        await queryClient.invalidateQueries({ queryKey: [CACHE_KEY.TRACKS] });
+        if (reloaded) {
+          await queryClient.invalidateQueries({ queryKey: [CACHE_KEY.TRACKS] });
+        }
       },
     });
   };
@@ -34,9 +36,7 @@ export const TrackLoadToast = (props: ButtonProps) => {
       });
       return;
     }
-    const id = toast.loading(`Loading tracks ${current}/${total}`, {
-      richColors: true,
-    });
+    const id = toast.loading(`Loading tracks ${current}/${total}`);
     setToastId(id);
   }, [
     current,
