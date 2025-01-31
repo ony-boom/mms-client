@@ -2,14 +2,15 @@ import type { Api } from "@/api/Api";
 import { createClient } from "graphql-sse";
 import { useEffect, useState } from "react";
 import { LoadedTracks, Track } from "@/api";
-import { useQuery } from "@tanstack/react-query";
-import { GET_TRACKS, TRACK_LOAD } from "./queries";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { GET_TRACKS, LOAD_TRACK, TRACK_LOAD } from "./queries";
 import { axiosClient, BASE_URL } from "./axios-client";
+import { CACHE_KEY } from "@/api/constant.ts";
 
 export const defaultApi: Api = {
   useTracks: (where, sortBy) => {
     return useQuery<Track[]>({
-      queryKey: ["tracks", where, sortBy],
+      queryKey: [CACHE_KEY.TRACKS, where, sortBy],
       queryFn: async () => {
         const { data: responseData } = await axiosClient.post<{
           data: { tracks: Track[] };
@@ -23,6 +24,20 @@ export const defaultApi: Api = {
     });
   },
 
+  useLoadTracks: () => {
+    return useMutation({
+      mutationFn: async () => {
+        const { data: responseData } = await axiosClient.post<{
+          data: { loadTracks: boolean };
+        }>("/graphql", {
+          query: LOAD_TRACK,
+        });
+
+        return responseData.data.loadTracks;
+      },
+    });
+  },
+
   getTrackCoverSrc: (trackId) => {
     return `${BASE_URL}/api/cover/${trackId}`;
   },
@@ -31,7 +46,7 @@ export const defaultApi: Api = {
     return trackIds.map((trackId) => `${BASE_URL}/api/audio/${trackId}`);
   },
 
-  useTrackLoadEvent: (debounce) => {
+  useTrackLoadEvent: (_debounce) => {
     const [state, setState] = useState<LoadedTracks>({
       current: 0,
       total: 0,
@@ -44,23 +59,16 @@ export const defaultApi: Api = {
         const subscription = client.iterate({
           query: TRACK_LOAD,
         });
-        let timeout: NodeJS.Timeout;
 
         try {
           for await (const result of subscription) {
-            const { data } = result;
+            const { data } = result as { data: { loadedTrack: LoadedTracks } };
             if (data) {
-              timeout = setTimeout(() => {
-                setState(data as LoadedTracks);
-              }, debounce || 300);
+              setState(data.loadedTrack);
             }
           }
-          // @ts-expect-error
-          clearTimeout(timeout);
           client.dispose();
         } catch {
-          // @ts-expect-error
-          clearTimeout(timeout);
           client.dispose();
         }
       })();

@@ -4,19 +4,14 @@ import { TrackCover } from "./track-cover";
 import { Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function TrackCard({ track, index }: TrackCardProps) {
+export function TrackCard({ track, index, onTrackPlay }: TrackCardProps) {
   const artistNames = track.artists.map((artist) => artist.name).join(", ");
   const player = usePlayerStore();
 
   const isCurrent = track.id === player.currentTrackId;
 
-  const onPlayButtonClick = async () => {
-    if (!isCurrent) {
-      player.toggleShuffle(false);
-      player.playTrackAtIndex(index);
-      return;
-    }
-    player.toggle();
+  const onPlayButtonClick = () => {
+    onTrackPlay(index, track.id);
   };
 
   return (
@@ -53,4 +48,5 @@ export function TrackCard({ track, index }: TrackCardProps) {
 type TrackCardProps = {
   track: Track;
   index: number;
+  onTrackPlay: (index: number, id: string) => void;
 };

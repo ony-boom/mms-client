@@ -1,7 +1,7 @@
 import { Track } from "@/api";
 import { TrackCard } from "@/pages/Tracks/components/track-card.tsx";
 
-export function TracksGrid({ tracks }: TracksGridProps) {
+export function TracksGrid({ tracks, onTrackPlay }: TracksGridProps) {
   if (tracks.length === 0) {
     return (
       <div className="py-4">
@@ -12,7 +12,7 @@ export function TracksGrid({ tracks }: TracksGridProps) {
   return (
     <div className="grid grid-cols-2 items-baseline gap-8 overflow-x-clip md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
       {tracks.map((track, index) => (
-        <TrackCard key={track.id} track={track} index={index} />
+        <TrackCard key={track.id} onTrackPlay={onTrackPlay} track={track} index={index} />
       ))}
     </div>
   );
@@ -20,4 +20,5 @@ export function TracksGrid({ tracks }: TracksGridProps) {
 
 type TracksGridProps = {
   tracks: Track[];
+  onTrackPlay: (index: number, id: string) => void;
 };

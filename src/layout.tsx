@@ -2,9 +2,10 @@ import "./styles/main.css";
 import { useState } from "react";
 import "@fontsource/manrope/index.css";
 import { Outlet } from "react-router";
-import { AppSidebar, Player, TrackLoadToast } from "@/components";
 import { ApiContext } from "@/context/api-context";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar, Player } from "@/components";
+import { Toaster } from "./components/ui/sonner";
 
 function Layout() {
   const [sidebarOpenState, setSidebarOpenState] = useState<boolean>(
@@ -29,7 +30,7 @@ function Layout() {
           </div>
 
           <Player />
-          <TrackLoadToast />
+          <Toaster theme="light" />
         </main>
       </SidebarProvider>
     </ApiContext.Provider>

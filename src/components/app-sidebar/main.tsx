@@ -9,12 +9,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
+  // SidebarTrigger,
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { AppRoutes } from "@/route.types";
 import { NavLink } from "react-router";
 import { clsx } from "clsx";
+import { TrackLoadToast } from "@/components";
 
 export function AppSidebar() {
   return (
@@ -52,7 +53,12 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarTrigger />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <TrackLoadToast variant="ghost" />
+          </SidebarMenuItem>
+          {/*<SidebarTrigger />*/}
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

@@ -1,14 +1,21 @@
 import { Shuffle } from "lucide-react";
+import { usePlayerStore } from "@/stores";
 import { PageTitle } from "@/components";
 import { Loading } from "./components/loading";
 import { SortOrder, TrackSortField } from "@/api";
 import { Input } from "@/components/ui/input.tsx";
 import { useApiClient, useDebounce } from "@/hooks";
 import { Button } from "@/components/ui/button.tsx";
-import { ChangeEventHandler, useEffect, useState } from "react";
 import { TracksGrid } from "./components/tracks-grid";
 import { TrackMenuSort } from "./components/track-menu-sort";
-import { usePlayerStore } from "@/stores";
+import {
+  ChangeEventHandler,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 
 export function Tracks() {
   const { useTracks, getTrackAudioSrc } = useApiClient();
@@ -17,10 +24,12 @@ export function Tracks() {
     toggleShuffle,
     getCurrentPlaylist,
     playTrackAtIndex,
+    ...player
   } = usePlayerStore();
   const [trackSearch, setTrackSearch] = useState("");
   const [trackSort, setTrackSort] = useState<TrackSortField>();
   const debouncedSearch = useDebounce(trackSearch, 250);
+  const isPlaylistInitialized = useRef(false);
 
   const { isLoading, data } = useTracks(
     {
@@ -28,35 +37,72 @@ export function Tracks() {
     },
     trackSort
       ? {
-          field: trackSort,
-          order: SortOrder.ASC,
-        }
+        field: trackSort,
+        order: SortOrder.ASC,
+      }
       : undefined,
   );
 
-  const onSortChange = (sort: TrackSortField) => {
-    setTrackSort(sort);
-  };
+  const playlist = useMemo(
+    () =>
+      data?.map((track) => ({
+        id: track.id,
+        src: getTrackAudioSrc([track.id])[0],
+      })),
+    [data, getTrackAudioSrc],
+  );
 
-  const onTrackSearchChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setTrackSearch(event.target.value);
-  };
+  const updatePlaylist = useCallback(() => {
+    if (playlist) {
+      setPlaylists(playlist);
+    }
+  }, [playlist, setPlaylists]);
+
+  const onSortChange = useCallback((sort: TrackSortField) => {
+    setTrackSort(sort);
+  }, []);
+
+  const onTrackSearchChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (event) => {
+      setTrackSearch(event.target.value);
+    },
+    []
+  );
 
   useEffect(() => {
-    if (data) {
-      setPlaylists(
-        data.map((track) => ({
-          id: track.id,
-          src: getTrackAudioSrc([track.id])[0],
-        })),
-      );
+    if (data && !isPlaylistInitialized.current) {
+      updatePlaylist();
+      isPlaylistInitialized.current = data.length > 0;
     }
-  }, [data, getTrackAudioSrc, setPlaylists]);
+  }, [data, updatePlaylist]);
 
-  const handleShuffle = () => {
+  const handleShuffle = useCallback(() => {
+    updatePlaylist();
     toggleShuffle(true, true);
     playTrackAtIndex(0);
-  };
+  }, [updatePlaylist, toggleShuffle, playTrackAtIndex]);
+
+  const handleTrackPlay = useCallback((index: number, id: string) => {
+    updatePlaylist();
+    const isCurrent = id === player.currentTrackId;
+
+    if (!isCurrent) {
+      toggleShuffle(false);
+      playTrackAtIndex(index);
+      return;
+    }
+
+    player.toggle();
+  }, [updatePlaylist, player, toggleShuffle, playTrackAtIndex]);
+
+  if (isLoading) {
+    return (
+      <div className="px-4">
+        <PageTitle title="Tracks" />
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -74,7 +120,7 @@ export function Tracks() {
           <TrackMenuSort value={trackSort} onValueChange={onSortChange} />
 
           <Button
-            disabled={getCurrentPlaylist().length === 0}
+            disabled={!data || data.length < 2}
             onClick={handleShuffle}
             size="sm"
             className="rounded-full"
@@ -84,7 +130,7 @@ export function Tracks() {
         </div>
       </div>
       <div className="mt-4 px-4">
-        {isLoading ? <Loading /> : <TracksGrid tracks={data ?? []} />}
+        <TracksGrid onTrackPlay={handleTrackPlay} tracks={data ?? []} />
       </div>
     </>
   );

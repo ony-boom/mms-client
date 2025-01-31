@@ -93,7 +93,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setPlaylists: (playlists) => {
     set({
       playlists,
-      shuffleIndices: Array.from({ length: playlists.length }, (_, i) => i),
+      // shuffleIndices: Array.from({ length: playlists.length }, (_, i) => i),
     });
   },
 
