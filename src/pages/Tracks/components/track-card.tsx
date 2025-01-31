@@ -46,12 +46,20 @@ export function TrackCard({ track, index, onTrackPlay }: TrackCardProps) {
             {artistNames}
           </p>
         </ContextMenuTrigger>
-        <ContextMenuContent className="border bg-background/80 w-max p-0 shadow-xl backdrop-blur-xl transition-all backdrop:saturate-150">
+        <ContextMenuContent className="bg-background/80 w-max border p-0 shadow-xl backdrop-blur-xl transition-all backdrop:saturate-150">
           <ContextMenuItem
             className="data-[highlighted]:bg-accent/60"
             onClick={onPlayNextClick}
           >
             Play next
+          </ContextMenuItem>
+
+          <ContextMenuItem className="data-[highlighted]:bg-accent/60">
+            Go to artist
+          </ContextMenuItem>
+
+          <ContextMenuItem className="data-[highlighted]:bg-accent/60">
+            Go to album
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
