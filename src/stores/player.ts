@@ -39,7 +39,7 @@ interface PlayerStateActions {
   playTrackAtIndex: (index: number) => void;
   playAtRandom: () => void;
   getCurrentIndex: () => number;
-  getCurrentTrack: () => Track | undefined; // Return Track object
+  getCurrentTrack: () => Track | undefined;
 }
 
 type PlayerState = PlayerStateProperties & PlayerStateActions;
