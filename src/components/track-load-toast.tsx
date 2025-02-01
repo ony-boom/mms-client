@@ -27,7 +27,7 @@ export const TrackLoadToast = (props: ButtonProps) => {
 
   useEffect(() => {
     if (!loadTrackMutation.isPending) {
-      toastId && toast.dismiss(toastId);
+      if (toastId) toast.dismiss(toastId);
       return;
     }
     if (toastId) {
@@ -44,6 +44,7 @@ export const TrackLoadToast = (props: ButtonProps) => {
     total,
     loadTrackMutation.isSuccess,
     loadTrackMutation.isPending,
+    toastId,
   ]);
 
   return (

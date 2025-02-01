@@ -116,7 +116,7 @@ export function Player({ className, ...rest }: PlayerProps) {
             </Button>
             <Button
               onClick={playPrev}
-              disabled={!hasPrev()}
+              disabled={!hasPrev() || !currentTrackId}
               size="icon"
               variant="ghost"
             >
@@ -132,7 +132,7 @@ export function Player({ className, ...rest }: PlayerProps) {
             </Button>
             <Button
               onClick={playNext}
-              disabled={!hasNext()}
+              disabled={!hasNext() || !currentTrackId}
               size="icon"
               variant="ghost"
             >

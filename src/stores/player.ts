@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { shuffle as arrayShuffle } from "fast-shuffle";
 
-type Playlist = {
+type Track = {
   id: string;
   src: string;
 };
@@ -11,11 +11,12 @@ interface PlayerStateProperties {
   position: number;
   isPlaying: boolean;
   duration: number;
-  playlists: Playlist[];
+  playlists: Map<string, string>; // Map<id, src>
+  playlistOrder: string[]; // Array of track IDs
   playingIndex: number;
   currentTrackId?: string;
   isShuffle: boolean;
-  shuffleIndices: number[];
+  shuffleOrder: string[]; // Array of track IDs for shuffled order
 }
 
 interface PlayerStateActions {
@@ -23,8 +24,8 @@ interface PlayerStateActions {
   setPosition: (position: number) => void;
   setIsPlaying: (isPlaying: boolean) => void;
   setDuration: (duration: number) => void;
-  setPlaylists: (playlists: Playlist[]) => void;
-  getCurrentPlaylist: () => Playlist[];
+  setPlaylists: (playlists: Track[]) => void; // Accept Track[] as input
+  getCurrentPlaylist: () => Track[]; // Return Track[] for compatibility
   setPlayingIndex: (index: number) => void;
   play: () => void;
   pause: () => void;
@@ -38,49 +39,52 @@ interface PlayerStateActions {
   playTrackAtIndex: (index: number) => void;
   playAtRandom: () => void;
   getCurrentIndex: () => number;
-  getCurrentTrack: () => Playlist | undefined;
+  getCurrentTrack: () => Track | undefined; // Return Track object
 }
 
 type PlayerState = PlayerStateProperties & PlayerStateActions;
 
 const updateCurrentTrack = (state: PlayerStateProperties, index: number) => {
-  const track = state.playlists[index];
-  if (track) {
+  const trackId = state.isShuffle
+    ? state.shuffleOrder[index]
+    : state.playlistOrder[index];
+  const trackSrc = state.playlists.get(trackId);
+  if (trackSrc) {
     return {
       playingIndex: index,
-      currentTrackId: track.id,
+      currentTrackId: trackId,
+      src: trackSrc,
     };
   }
   return {};
 };
 
 const shufflePlaylist = (state: PlayerState, shuffleAll: boolean) => {
-  const currentTrack = state.getCurrentTrack();
-  const indices = Array.from({ length: state.playlists.length }, (_, i) => i);
+  const currentTrackId = state.currentTrackId;
+  const trackIds = [...state.playlistOrder];
 
-  if (!shuffleAll && currentTrack) {
-    const currentIndex = state.playlists.findIndex(
-      (track) => track.id === currentTrack.id,
-    );
-    indices.splice(currentIndex, 1);
-    const shuffledRemaining = arrayShuffle(indices);
-    shuffledRemaining.unshift(currentIndex);
+  if (!shuffleAll && currentTrackId) {
+    const currentIndex = trackIds.indexOf(currentTrackId);
+    trackIds.splice(currentIndex, 1);
+    const shuffledRemaining = arrayShuffle(trackIds);
+    shuffledRemaining.unshift(currentTrackId);
     return shuffledRemaining;
   }
 
-  return arrayShuffle(indices);
+  return arrayShuffle(trackIds);
 };
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
   duration: 1,
   position: 0,
-  playlists: [],
+  playlists: new Map(),
+  playlistOrder: [],
   src: undefined,
   playingIndex: 0,
   isPlaying: false,
   isShuffle: false,
   currentTrackId: undefined,
-  shuffleIndices: [],
+  shuffleOrder: [],
 
   setSrc: (src) => set({ src }),
   setPosition: (position) => set({ position }),
@@ -88,32 +92,43 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setIsPlaying: (isPlaying) => set({ isPlaying }),
   setPlayingIndex: (index) => set(updateCurrentTrack(get(), index)),
 
-  getCurrentTrack: () =>
-    get().playlists.find((track) => track.id === get().currentTrackId),
+  getCurrentTrack: () => {
+    const state = get();
+    return state.currentTrackId
+      ? {
+          id: state.currentTrackId,
+          src: state.playlists.get(state.currentTrackId)!,
+        }
+      : undefined;
+  },
 
   setPlaylists: (playlists) => {
+    const playlistMap = new Map(
+      playlists.map((track) => [track.id, track.src]),
+    );
+    const playlistOrder = playlists.map((track) => track.id);
     set({
-      playlists,
+      playlists: playlistMap,
+      playlistOrder,
     });
   },
 
   getCurrentPlaylist: () => {
     const state = get();
-    return state.isShuffle
-      ? state.shuffleIndices.map((index) => state.playlists[index])
-      : state.playlists;
+    const order = state.isShuffle ? state.shuffleOrder : state.playlistOrder;
+    return order.map((id) => ({
+      id,
+      src: state.playlists.get(id)!,
+    }));
   },
 
   getCurrentIndex: () => {
     const state = get();
-    const currentTrack = state.getCurrentTrack();
-    if (!currentTrack) return 0;
+    const currentTrackId = state.currentTrackId;
+    if (!currentTrackId) return 0;
 
-    return state.isShuffle
-      ? state.shuffleIndices.findIndex(
-          (index) => state.playlists[index].id === currentTrack.id,
-        )
-      : state.playlists.findIndex((track) => track.id === currentTrack.id);
+    const order = state.isShuffle ? state.shuffleOrder : state.playlistOrder;
+    return order.indexOf(currentTrackId);
   },
 
   play: () => set({ isPlaying: true }),
@@ -123,56 +138,58 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   toggleShuffle: (value, shuffleAll) => {
     set((state) => {
       const newShuffleState = value ?? !state.isShuffle;
-      const shuffleIndices = newShuffleState
+      const shuffleOrder = newShuffleState
         ? shufflePlaylist(state, Boolean(shuffleAll))
         : [];
 
       return {
         isShuffle: newShuffleState,
-        shuffleIndices,
+        shuffleOrder,
         ...updateCurrentTrack(state, state.playingIndex),
       };
     });
   },
 
-  playAtRandom: () =>
-    get().playTrackAtIndex(Math.floor(Math.random() * get().playlists.length)),
+  playAtRandom: () => {
+    const state = get();
+    const order = state.isShuffle ? state.shuffleOrder : state.playlistOrder;
+    const randomIndex = Math.floor(Math.random() * order.length);
+    state.playTrackAtIndex(randomIndex);
+  },
 
   playAfter: (id) => {
     const state = get();
-    const currentPlaylist = state.getCurrentPlaylist();
+    const currentPlaylistOrder = state.isShuffle
+      ? state.shuffleOrder
+      : state.playlistOrder;
     const currentIndex = state.getCurrentIndex();
 
-    const sourceIndex = currentPlaylist.findIndex((track) => track.id === id);
+    const sourceIndex = currentPlaylistOrder.indexOf(id);
 
     if (sourceIndex === -1 || sourceIndex === currentIndex + 1) return;
 
-    const newPlaylist = [...currentPlaylist];
-    const [removedTrack] = newPlaylist.splice(sourceIndex, 1);
-    newPlaylist.splice(currentIndex + 1, 0, removedTrack);
+    const newPlaylistOrder = [...currentPlaylistOrder];
+    const [removedId] = newPlaylistOrder.splice(sourceIndex, 1);
+    newPlaylistOrder.splice(currentIndex + 1, 0, removedId);
 
     if (state.isShuffle) {
-      const newShuffleIndices = newPlaylist.map((track) =>
-        state.playlists.findIndex((t) => t.id === track.id),
-      );
-      set({ shuffleIndices: newShuffleIndices });
+      set({ shuffleOrder: newPlaylistOrder });
     } else {
-      set({ playlists: newPlaylist });
+      set({ playlistOrder: newPlaylistOrder });
     }
   },
 
   playTrackAtIndex: (index) => {
     const state = get();
-    const track = state.getCurrentPlaylist()[index];
-    if (!track) return console.warn("Invalid track index:", index);
-
-    const actualTrack = state.playlists.find((t) => t.id === track.id);
-    if (!actualTrack) return;
+    const order = state.isShuffle ? state.shuffleOrder : state.playlistOrder;
+    const trackId = order[index];
+    const trackSrc = state.playlists.get(trackId);
+    if (!trackSrc) return console.warn("Invalid track index:", index);
 
     set({
-      playingIndex: state.playlists.indexOf(actualTrack),
-      currentTrackId: actualTrack.id,
-      src: actualTrack.src,
+      playingIndex: index,
+      currentTrackId: trackId,
+      src: trackSrc,
       isPlaying: true,
       position: 0,
     });
@@ -181,7 +198,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   playNext: () => {
     const state = get();
     const currentIndex = state.getCurrentIndex();
-    if (currentIndex < state.getCurrentPlaylist().length - 1) {
+    const order = state.isShuffle ? state.shuffleOrder : state.playlistOrder;
+    if (currentIndex < order.length - 1) {
       state.playTrackAtIndex(currentIndex + 1);
     }
   },
@@ -195,6 +213,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
 
   hasPrev: () => get().getCurrentIndex() > 0,
-  hasNext: () =>
-    get().getCurrentIndex() < get().getCurrentPlaylist().length - 1,
+  hasNext: () => {
+    const state = get();
+    const order = state.isShuffle ? state.shuffleOrder : state.playlistOrder;
+    return state.getCurrentIndex() < order.length - 1;
+  },
 }));

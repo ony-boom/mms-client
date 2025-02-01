@@ -1,5 +1,6 @@
 import Layout from "./layout";
 import { StrictMode } from "react";
+import { enableMapSet } from "immer";
 import { AppRoutes } from "./route.types";
 import { Home, Tracks, Albums } from "./pages";
 import { createRoot } from "react-dom/client";
@@ -7,6 +8,8 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
+
+enableMapSet();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -22,7 +22,6 @@ export function Tracks() {
   const {
     setPlaylists,
     toggleShuffle,
-    getCurrentPlaylist,
     playTrackAtIndex,
     ...player
   } = usePlayerStore();

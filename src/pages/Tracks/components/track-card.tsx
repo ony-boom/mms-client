@@ -46,10 +46,11 @@ export function TrackCard({ track, index, onTrackPlay }: TrackCardProps) {
             {artistNames}
           </p>
         </ContextMenuTrigger>
-        <ContextMenuContent className="bg-background/80 w-max border p-0 shadow-xl backdrop-blur-xl transition-all backdrop:saturate-150">
+        <ContextMenuContent className="bg-background/80 border-border w-36 border p-0 shadow-xl backdrop-blur-xl transition-all backdrop:saturate-150">
           <ContextMenuItem
             className="data-[highlighted]:bg-accent/60"
             onClick={onPlayNextClick}
+            disabled={!player.currentTrackId}
           >
             Play next
           </ContextMenuItem>
