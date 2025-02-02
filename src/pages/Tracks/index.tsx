@@ -15,10 +15,9 @@ import {
   useRef,
   useMemo,
   useCallback,
-  memo,
 } from "react";
 
-function TracksBase() {
+export function Tracks() {
   const { useTracks, getTrackAudioSrc } = useApiClient();
   const { setPlaylists, toggleShuffle, playTrackAtIndex, ...player } =
     usePlayerStore();
@@ -147,5 +146,3 @@ function TracksBase() {
     </div>
   );
 }
-
-export const Tracks = memo(TracksBase);
