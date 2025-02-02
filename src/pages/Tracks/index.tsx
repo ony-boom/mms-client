@@ -15,9 +15,10 @@ import {
   useRef,
   useMemo,
   useCallback,
+  memo,
 } from "react";
 
-export function Tracks() {
+function TracksBase() {
   const { useTracks, getTrackAudioSrc } = useApiClient();
   const { setPlaylists, toggleShuffle, playTrackAtIndex, ...player } =
     usePlayerStore();
@@ -25,6 +26,8 @@ export function Tracks() {
   const [trackSort, setTrackSort] = useState<TrackSortField>();
   const debouncedSearch = useDebounce(trackSearch, 250);
   const isPlaylistInitialized = useRef(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const wasFocused = useRef(false);
 
   const { isLoading, data } = useTracks(
     {
@@ -37,6 +40,21 @@ export function Tracks() {
         }
       : undefined,
   );
+
+  useEffect(() => {
+    const shouldRestoreFocus = wasFocused.current;
+    if (shouldRestoreFocus) {
+      searchInputRef.current?.focus();
+    }
+  }, [data]);
+
+  const handleInputFocus = useCallback(() => {
+    wasFocused.current = true;
+  }, []);
+
+  const handleInputBlur = useCallback(() => {
+    wasFocused.current = false;
+  }, []);
 
   const playlist = useMemo(
     () =>
@@ -81,13 +99,11 @@ export function Tracks() {
     (index: number, id: string) => {
       updatePlaylist();
       const isCurrent = id === player.currentTrackId;
-
       if (!isCurrent) {
         toggleShuffle(false);
         playTrackAtIndex(index);
         return;
       }
-
       player.toggle();
     },
     [updatePlaylist, player, toggleShuffle, playTrackAtIndex],
@@ -107,13 +123,15 @@ export function Tracks() {
       <PageTitle title="Tracks" />
       <div className="bg-background/80 border-border flex w-max items-center gap-2 rounded-full border px-2 py-1 backdrop-blur-2xl backdrop-saturate-150">
         <Input
+          ref={searchInputRef}
           placeholder="Search..."
           className="w-max border-none shadow-none focus-visible:ring-0"
           value={trackSearch}
           onChange={onTrackSearchChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
         />
         <TrackMenuSort value={trackSort} onValueChange={onSortChange} />
-
         <Button
           disabled={!data || data.length < 2}
           onClick={handleShuffle}
@@ -129,3 +147,5 @@ export function Tracks() {
     </div>
   );
 }
+
+export const Tracks = memo(TracksBase);

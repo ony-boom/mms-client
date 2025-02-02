@@ -9,8 +9,9 @@ import {
   ContextMenuTrigger,
   ContextMenuContent,
 } from "@/components/ui/context-menu";
+import { memo } from "react";
 
-export function TrackCard({ track, index, onTrackPlay }: TrackCardProps) {
+function Card({ track, index, onTrackPlay }: TrackCardProps) {
   const artistNames = track.artists.map((artist) => artist.name).join(", ");
   const player = usePlayerStore();
 
@@ -75,6 +76,8 @@ export function TrackCard({ track, index, onTrackPlay }: TrackCardProps) {
     </div>
   );
 }
+
+export const TrackCard = memo(Card);
 
 type TrackCardProps = {
   track: Track;
