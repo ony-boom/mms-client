@@ -19,12 +19,8 @@ import {
 
 export function Tracks() {
   const { useTracks, getTrackAudioSrc } = useApiClient();
-  const {
-    setPlaylists,
-    toggleShuffle,
-    playTrackAtIndex,
-    ...player
-  } = usePlayerStore();
+  const { setPlaylists, toggleShuffle, playTrackAtIndex, ...player } =
+    usePlayerStore();
   const [trackSearch, setTrackSearch] = useState("");
   const [trackSort, setTrackSort] = useState<TrackSortField>();
   const debouncedSearch = useDebounce(trackSearch, 250);
@@ -36,9 +32,9 @@ export function Tracks() {
     },
     trackSort
       ? {
-        field: trackSort,
-        order: SortOrder.ASC,
-      }
+          field: trackSort,
+          order: SortOrder.ASC,
+        }
       : undefined,
   );
 
@@ -65,7 +61,7 @@ export function Tracks() {
     (event) => {
       setTrackSearch(event.target.value);
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -81,18 +77,21 @@ export function Tracks() {
     playTrackAtIndex(0);
   }, [updatePlaylist, toggleShuffle, playTrackAtIndex]);
 
-  const handleTrackPlay = useCallback((index: number, id: string) => {
-    updatePlaylist();
-    const isCurrent = id === player.currentTrackId;
+  const handleTrackPlay = useCallback(
+    (index: number, id: string) => {
+      updatePlaylist();
+      const isCurrent = id === player.currentTrackId;
 
-    if (!isCurrent) {
-      toggleShuffle(false);
-      playTrackAtIndex(index);
-      return;
-    }
+      if (!isCurrent) {
+        toggleShuffle(false);
+        playTrackAtIndex(index);
+        return;
+      }
 
-    player.toggle();
-  }, [updatePlaylist, player, toggleShuffle, playTrackAtIndex]);
+      player.toggle();
+    },
+    [updatePlaylist, player, toggleShuffle, playTrackAtIndex],
+  );
 
   if (isLoading) {
     return (
@@ -104,33 +103,29 @@ export function Tracks() {
   }
 
   return (
-    <>
-      <div className="px-4">
-        <PageTitle title="Tracks" />
-      </div>
-      <div className="sticky top-2 z-30 pl-5">
-        <div className="bg-background/80 border-border flex w-max items-center gap-2 rounded-full border px-2 py-1 backdrop-blur-2xl backdrop-saturate-150">
-          <Input
-            placeholder="Search..."
-            className="w-max border-none shadow-none focus-visible:ring-0"
-            value={trackSearch}
-            onChange={onTrackSearchChange}
-          />
-          <TrackMenuSort value={trackSort} onValueChange={onSortChange} />
+    <div className="pl-4">
+      <PageTitle title="Tracks" />
+      <div className="bg-background/80 border-border flex w-max items-center gap-2 rounded-full border px-2 py-1 backdrop-blur-2xl backdrop-saturate-150">
+        <Input
+          placeholder="Search..."
+          className="w-max border-none shadow-none focus-visible:ring-0"
+          value={trackSearch}
+          onChange={onTrackSearchChange}
+        />
+        <TrackMenuSort value={trackSort} onValueChange={onSortChange} />
 
-          <Button
-            disabled={!data || data.length < 2}
-            onClick={handleShuffle}
-            size="sm"
-            className="rounded-full"
-          >
-            Shuffle <Shuffle className="h-4 w-4" />
-          </Button>
-        </div>
+        <Button
+          disabled={!data || data.length < 2}
+          onClick={handleShuffle}
+          size="sm"
+          className="rounded-full"
+        >
+          Shuffle <Shuffle className="h-4 w-4" />
+        </Button>
       </div>
-      <div className="mt-4 px-4">
+      <div className="mt-4">
         <TracksGrid onTrackPlay={handleTrackPlay} tracks={data ?? []} />
       </div>
-    </>
+    </div>
   );
 }

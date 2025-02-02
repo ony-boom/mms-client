@@ -1,8 +1,7 @@
-import { useApiClient } from "@/hooks";
-import { Cover } from "@/components/cover";
 import { HTMLProps } from "react";
 import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useApiClient } from "@/hooks";
+import { Cover } from "@/components/cover";
 
 export function TrackCover({
   trackId,
@@ -14,24 +13,16 @@ export function TrackCover({
   const src = api.getTrackCoverSrc(trackId);
 
   return (
-    <div
+    <Cover
       {...rest}
-      className={cn(
-        "aspect-square w-full max-w-[456px] overflow-hidden rounded",
-        className,
-      )}
-    >
-      <Cover
-        src={src}
-        alt={trackTitle}
-        className="h-full w-full"
-        placeholder={<Skeleton className="h-full w-full" />}
-      />
-    </div>
+      src={src}
+      alt={trackTitle}
+      className={cn("h-full w-full rounded", className)}
+    />
   );
 }
 
-export type TrackCoverProps = HTMLProps<HTMLDivElement> & {
+export type TrackCoverProps = HTMLProps<HTMLImageElement> & {
   trackId: string;
   trackTitle: string;
 };

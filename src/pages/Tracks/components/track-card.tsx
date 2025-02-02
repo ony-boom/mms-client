@@ -29,7 +29,7 @@ export function TrackCard({ track, index, onTrackPlay }: TrackCardProps) {
       <ContextMenu>
         <ContextMenuTrigger>
           <TrackCover
-            className="mb-2 max-w-[256px]"
+            className="mb-2"
             trackId={track.id}
             trackTitle={track.title}
           />
@@ -68,7 +68,7 @@ export function TrackCard({ track, index, onTrackPlay }: TrackCardProps) {
       <Button
         size="icon"
         onClick={onPlayButtonClick}
-        className="absolute right-2 bottom-[68px] z-20 opacity-0 shadow-xl transition group-hover:opacity-100"
+        className="absolute right-2 bottom-16 z-20 opacity-0 shadow-xl transition group-hover:opacity-100"
       >
         {isCurrent && player.isPlaying ? <Pause /> : <Play />}
       </Button>

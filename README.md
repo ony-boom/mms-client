@@ -11,4 +11,4 @@ A web client for my music server (should work with any music server though)
 
 ### TODO
 
-- [ ] use virtualized list for the song list
+- [x] use virtualized list for the song list
