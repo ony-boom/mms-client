@@ -17,6 +17,7 @@ export const Audio = memo(
       currentTrackId,
       setDuration,
       setPosition,
+      position,
       pause,
       play,
       playNext,
@@ -51,6 +52,7 @@ export const Audio = memo(
     ) => {
       const audioElement = event.target as HTMLAudioElement;
       setDuration(audioElement.duration);
+      audioElement.currentTime = position;
       updateNavigatorMetadata();
     };
 

@@ -96,5 +96,5 @@
 }
 
 .with-blur {
-  @apply bg-background/80 border-border/20 border shadow-xl backdrop-blur-md backdrop-brightness-50 backdrop:saturate-150;
+  @apply bg-background/80 border-border/20 border shadow-xl backdrop-blur-md backdrop-brightness-75;
 }
