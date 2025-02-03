@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Track } from "@/api";
 import { usePlayerStore } from "@/stores";
 import { TrackCover } from "./track-cover";
@@ -9,7 +10,7 @@ import {
   ContextMenuTrigger,
   ContextMenuContent,
 } from "@/components/ui/context-menu";
-import { memo } from "react";
+import { Redo2, CircleUserRound, Disc } from "lucide-react";
 
 function Card({ track, index, onTrackPlay }: TrackCardProps) {
   const artistNames = track.artists.map((artist) => artist.name).join(", ");
@@ -47,21 +48,24 @@ function Card({ track, index, onTrackPlay }: TrackCardProps) {
             {artistNames}
           </p>
         </ContextMenuTrigger>
-        <ContextMenuContent className="bg-background/80 border-border w-36 border p-0 shadow-xl backdrop-blur-xl transition-all backdrop:saturate-150">
+        <ContextMenuContent className="with-blur w-36 space-y-1 p-0 transition-all">
           <ContextMenuItem
-            className="data-[highlighted]:bg-accent/60"
+            className="data-[highlighted]:bg-accent/60 w-full"
             onClick={onPlayNextClick}
             disabled={!player.currentTrackId}
           >
             Play next
+            <Redo2 size={16} className="ml-auto" />
           </ContextMenuItem>
 
-          <ContextMenuItem className="data-[highlighted]:bg-accent/60">
+          <ContextMenuItem className="data-[highlighted]:bg-accent/60 w-full">
             Go to artist
+            <CircleUserRound size={16} className="ml-auto" />
           </ContextMenuItem>
 
-          <ContextMenuItem className="data-[highlighted]:bg-accent/60">
+          <ContextMenuItem className="data-[highlighted]:bg-accent/60 w-full">
             Go to album
+            <Disc size={16} className="ml-auto" />
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>

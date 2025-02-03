@@ -1,10 +1,16 @@
 import { Track } from "@/api";
 import { usePlayerStore } from "@/stores";
 import { useApiClient } from "@/hooks";
-import { ReactEventHandler, useCallback, forwardRef, useEffect } from "react";
+import {
+  ReactEventHandler,
+  useCallback,
+  forwardRef,
+  useEffect,
+  memo,
+} from "react";
 
-export const Audio = forwardRef<HTMLAudioElement, AudioProps>(
-  ({ currentTrack }, ref) => {
+export const Audio = memo(
+  forwardRef<HTMLAudioElement, AudioProps>(({ currentTrack }, ref) => {
     const { getTrackCoverSrc } = useApiClient();
     const {
       src,
@@ -49,7 +55,7 @@ export const Audio = forwardRef<HTMLAudioElement, AudioProps>(
     };
 
     useEffect(() => {
-      navigator.mediaSession.setActionHandler("previoustrack", playPrev)
+      navigator.mediaSession.setActionHandler("previoustrack", playPrev);
       navigator.mediaSession.setActionHandler("nexttrack", playNext);
     }, []);
 
@@ -65,7 +71,7 @@ export const Audio = forwardRef<HTMLAudioElement, AudioProps>(
         onLoadedMetadata={handleLoadedMetadata}
       />
     );
-  },
+  }),
 );
 
 export type AudioProps = {

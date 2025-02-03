@@ -75,15 +75,8 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-
-    scrollbar-width: thin;
-    scrollbar-gutter: stable;
-    scrollbar-color: theme("colors.foreground") theme("colors.muted.DEFAULT");
-  }
-
-  html {
+  html,
+  body {
     overflow: hidden;
     scrollbar-width: none;
   }
@@ -92,4 +85,16 @@
     @apply bg-background text-foreground;
     @apply !min-w-full;
   }
+
+  [data-virtuoso-scroller="true"] {
+    @apply border-border;
+
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+    scrollbar-color: theme("colors.foreground") theme("colors.muted.DEFAULT");
+  }
+}
+
+.with-blur {
+  @apply bg-background/80 border-border/20 border shadow-xl backdrop-blur-md backdrop-brightness-50 backdrop:saturate-150;
 }

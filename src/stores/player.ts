@@ -11,12 +11,12 @@ interface PlayerStateProperties {
   position: number;
   isPlaying: boolean;
   duration: number;
-  playlists: Map<string, string>; // Map<id, src>
-  playlistOrder: string[]; // Array of track IDs
+  playlists: Map<string, string>;
+  playlistOrder: string[];
   playingIndex: number;
   currentTrackId?: string;
   isShuffle: boolean;
-  shuffleOrder: string[]; // Array of track IDs for shuffled order
+  shuffleOrder: string[];
 }
 
 interface PlayerStateActions {
@@ -24,8 +24,8 @@ interface PlayerStateActions {
   setPosition: (position: number) => void;
   setIsPlaying: (isPlaying: boolean) => void;
   setDuration: (duration: number) => void;
-  setPlaylists: (playlists: Track[]) => void; // Accept Track[] as input
-  getCurrentPlaylist: () => Track[]; // Return Track[] for compatibility
+  setPlaylists: (playlists: Track[]) => void;
+  getCurrentPlaylist: () => Track[];
   setPlayingIndex: (index: number) => void;
   play: () => void;
   pause: () => void;

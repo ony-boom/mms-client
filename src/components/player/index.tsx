@@ -63,7 +63,7 @@ export function Player({ className, ...rest }: PlayerProps) {
       <div
         className={cn(
           className,
-          "bg-background/80 fixed bottom-4 left-[50%] z-50 min-h-[81px] w-max translate-x-[-50%] overflow-hidden rounded-xl border shadow-xl backdrop-blur-xl transition-all backdrop:saturate-150",
+          "with-blur fixed bottom-4 left-[50%] z-50 min-h-[81px] w-max translate-x-[-50%] overflow-hidden rounded-xl transition-all",
         )}
         {...rest}
       >

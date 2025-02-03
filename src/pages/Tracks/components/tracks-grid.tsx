@@ -38,12 +38,13 @@ export function TracksGrid({ tracks, onTrackPlay }: TracksGridProps) {
   }
   return (
     <VirtuosoGrid
-      totalCount={tracks.length}
+      data={tracks}
+      overscan={2}
       components={components}
-      itemContent={(index) => (
+      itemContent={(index, track ) => (
         <TrackCard
           onTrackPlay={onTrackPlay}
-          track={tracks[index]}
+          track={track}
           index={index}
         />
       )}

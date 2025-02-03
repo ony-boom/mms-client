@@ -120,7 +120,7 @@ export function Tracks() {
   return (
     <div className="pl-4">
       <PageTitle title="Tracks" />
-      <div className="bg-background/80 border-border flex w-max items-center gap-2 rounded-full border px-2 py-1 backdrop-blur-2xl backdrop-saturate-150">
+      <div className="bg-background/80 border-border flex w-max items-center gap-2 rounded-full border px-2 py-1">
         <Input
           ref={searchInputRef}
           placeholder="Search..."
