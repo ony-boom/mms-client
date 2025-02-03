@@ -57,7 +57,7 @@ export const Audio = memo(
     useEffect(() => {
       navigator.mediaSession.setActionHandler("previoustrack", playPrev);
       navigator.mediaSession.setActionHandler("nexttrack", playNext);
-    }, []);
+    }, [playNext, playPrev]);
 
     return (
       <audio
