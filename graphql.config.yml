@@ -1,1 +1,1 @@
-schema: http://localhost:4000/graphql
+schema: ${VITE_API_URL}/graphql
