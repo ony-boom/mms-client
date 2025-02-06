@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Check, SortAsc } from "lucide-react";
+import { MouseEventHandler } from "react";
+import { Check, SortAsc, SortDesc } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { TrackSortField } from "@/api";
+import { SortOrder, TrackSortField } from "@/api";
 
 const sortFields = [
   {
@@ -38,20 +39,45 @@ const sortFields = [
 export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
   const [open, setOpen] = React.useState(false);
 
+  const handleSortDirectionChange: MouseEventHandler<HTMLButtonElement> = (
+    e,
+  ) => {
+    e.stopPropagation();
+    onValueChange(
+      value.field ?? TrackSortField.NONE,
+      value.direction === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+    );
+  };
+
+  const getSortFieldLabel = (field: TrackSortField) => {
+    const sortField = sortFields.find((f) => f.value === field);
+    if (!sortField || sortField.value === TrackSortField.NONE) return "Sort by";
+    return sortField.label;
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          role="combobox"
-          size={"sm"}
-          aria-expanded={open}
-          className="justify-between rounded-full"
-        >
-          {value
-            ? sortFields.find((framework) => framework.value === value)?.label
-            : "Sort by"}
-          <SortAsc className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
+        <div className="bg-primary group hover:bg-primary/90 flex items-center overflow-hidden rounded-full">
+          <Button
+            role="combobox"
+            size={"sm"}
+            aria-expanded={open}
+            className="justify-between rounded-full bg-transparent"
+          >
+            {getSortFieldLabel(value.field)}
+          </Button>
+
+          <Button
+            onClick={handleSortDirectionChange}
+            size={"sm"}
+            title={value.direction === SortOrder.ASC ? "Sort Desc" : "Sort Asc"}
+            disabled={value?.field === TrackSortField.NONE}
+            className="rounded-full bg-transparent"
+          >
+            {value.direction === SortOrder.ASC ? <SortAsc /> : <SortDesc />}
+          </Button>
+        </div>
       </PopoverTrigger>
       <PopoverContent className="mt-2 w-max p-0">
         <Command>
@@ -63,18 +89,20 @@ export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
                   value={framework.value ?? ""}
                   className="w-full flex-row-reverse justify-between gap-2"
                   onSelect={(currentValue) => {
-                    onValueChange(
-                      (currentValue === value
-                        ? ""
-                        : currentValue) as TrackSortField,
-                    );
+                    const realValue =
+                      currentValue === value.field
+                        ? TrackSortField.NONE
+                        : (currentValue as TrackSortField);
+                    onValueChange(realValue as TrackSortField, value.direction);
                     setOpen(false);
                   }}
                 >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0",
+                      value.field === framework.value
+                        ? "opacity-100"
+                        : "opacity-0",
                     )}
                   />
                   {framework.label}
@@ -89,6 +117,9 @@ export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
 }
 
 export type TrackMenuSortProps = {
-  value?: TrackSortField;
-  onValueChange: (value: TrackSortField) => void;
+  value: {
+    field: TrackSortField;
+    direction: SortOrder;
+  };
+  onValueChange: (value: TrackSortField, direction: SortOrder) => void;
 };

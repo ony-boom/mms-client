@@ -35,11 +35,11 @@ const initDB = (): Promise<IDBDatabase> => {
   });
 };
 
-const idbOperation = async (
+const idbOperation = async <T>(
   storeName: string,
   mode: IDBTransactionMode,
-  operation: (store: IDBObjectStore) => IDBRequest,
-): Promise<any> => {
+  operation: (store: IDBObjectStore) => IDBRequest<T>,
+): Promise<T> => {
   const db = await (dbPromise || (dbPromise = initDB()));
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(storeName, mode);
@@ -47,7 +47,7 @@ const idbOperation = async (
     const request = operation(store);
 
     request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
+    request.onsuccess = () => resolve(request.result as T);
   });
 };
 

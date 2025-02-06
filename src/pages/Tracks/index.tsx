@@ -22,7 +22,13 @@ export function Tracks() {
   const { setPlaylists, toggleShuffle, playTrackAtIndex, ...player } =
     usePlayerStore();
   const [trackSearch, setTrackSearch] = useState("");
-  const [trackSort, setTrackSort] = useState<TrackSortField>();
+  const [trackSort, setTrackSort] = useState<{
+    field: TrackSortField;
+    direction: SortOrder;
+  }>({
+    field: TrackSortField.NONE,
+    direction: SortOrder.ASC,
+  });
   const debouncedSearch = useDebounce(trackSearch, 250);
   const isPlaylistInitialized = useRef(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -32,10 +38,10 @@ export function Tracks() {
     {
       title: debouncedSearch,
     },
-    trackSort
+    trackSort.field
       ? {
-          field: trackSort,
-          order: SortOrder.ASC,
+          field: trackSort.field,
+          order: trackSort.direction,
         }
       : undefined,
   );
@@ -70,9 +76,12 @@ export function Tracks() {
     }
   }, [playlist, setPlaylists]);
 
-  const onSortChange = useCallback((sort: TrackSortField) => {
-    setTrackSort(sort);
-  }, []);
+  const onSortChange = useCallback(
+    (sort: TrackSortField, direction: SortOrder) => {
+      setTrackSort({ field: sort, direction });
+    },
+    [],
+  );
 
   const onTrackSearchChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {

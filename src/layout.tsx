@@ -4,7 +4,7 @@ import "@fontsource/manrope/index.css";
 import { Outlet } from "react-router";
 import { ApiContext } from "@/context/api-context";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar, Player } from "@/components";
+import { AppSidebar, AppTitle, Player } from "@/components";
 import { Toaster } from "./components/ui/sonner";
 
 function Layout() {
@@ -19,6 +19,7 @@ function Layout() {
 
   return (
     <ApiContext.Provider value={{ apiClientName: "default" }}>
+      <AppTitle />
       <SidebarProvider
         open={sidebarOpenState}
         onOpenChange={handleSidebarOpenChange}
