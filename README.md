@@ -2,7 +2,7 @@
 
 A web client for my music server (should work with any music server though)
 
-![scr](https://github.com/user-attachments/assets/bd1cee23-a990-4000-98b7-5f5e104255d9)
+![Screenshot from 2025-02-07 15-29-33](https://github.com/user-attachments/assets/7cb6b8f4-c915-4b2f-9206-6d2c35a1a17c)
 
 
 > [!NOTE]  
