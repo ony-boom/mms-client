@@ -91,10 +91,10 @@
 
     scrollbar-width: thin;
     scrollbar-gutter: stable;
-    scrollbar-color: theme("colors.foreground") theme("colors.muted.DEFAULT");
+    scrollbar-color: theme("colors.foreground") transparent;
   }
 }
 
 .with-blur {
-  @apply bg-background/80 border-border/20 border shadow-xl backdrop-blur-md backdrop-brightness-75;
+  @apply bg-background/80 border-border/20 border shadow-xl backdrop-blur backdrop-brightness-50;
 }

@@ -1,7 +1,6 @@
-import { cn } from "@/lib/utils.ts";
 import { useApiClient } from "@/hooks";
 import { usePlayerStore } from "@/stores";
-import { type ElementRef, HTMLProps, useEffect, useRef } from "react";
+import { type ElementRef, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import {
   Heart,
@@ -15,8 +14,12 @@ import { Audio } from "./audio";
 import { TrackProgress } from "./track-progress";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { motion, AnimatePresence } from "motion/react";
+import { Playlists } from "@/components/player/playlists.tsx";
+import { cn } from "@/lib/utils.ts";
 
-export function Player({ className, ...rest }: PlayerProps) {
+export function Player() {
+  const [expanded, setExpanded] = useState(false);
   const { useTracks } = useApiClient();
   const {
     isPlaying,
@@ -60,14 +63,12 @@ export function Player({ className, ...rest }: PlayerProps) {
   return (
     <>
       <Audio currentTrack={currentTrack} ref={audioRef} />
-      <div
-        className={cn(
-          className,
-          "with-blur fixed bottom-4 left-[50%] z-50 min-h-[81px] w-max translate-x-[-50%] overflow-hidden rounded-xl transition-all",
-        )}
-        {...rest}
+      <motion.div
+        className={
+          "with-blur fixed bottom-4 left-[50%] z-50 min-h-[81px] w-max translate-x-[-50%] overflow-hidden rounded-xl transition-all"
+        }
       >
-        <div className="relative flex items-center justify-between gap-16 p-2 pb-3">
+        <div className="relative flex items-center justify-between gap-16 p-4">
           <div aria-labelledby="track info" className="flex items-end gap-4">
             {currentTrack ? (
               <>
@@ -139,11 +140,35 @@ export function Player({ className, ...rest }: PlayerProps) {
               <SkipForward />
             </Button>
           </div>
-          <TrackProgress audioRef={audioRef} currentTrack={currentTrack} />
+          <div className="absolute top-1 left-[50%] translate-x-[-50%]">
+            <button
+              className={cn(
+                "bg-foreground/20 hover:bg-foreground/30 h-1 w-12 cursor-pointer rounded-full outline-0 transition-all hover:w-16",
+                {
+                  "w-20": expanded,
+                },
+              )}
+              onClick={() => setExpanded((prev) => !prev)}
+            ></button>
+          </div>
         </div>
-      </div>
+
+        <AnimatePresence>
+          {expanded && (
+            <motion.div
+              key="playlists"
+              initial={{
+                height: 0,
+              }}
+              animate={{ height: "auto" }}
+              exit={{ height: 0 }}
+            >
+              <Playlists />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <TrackProgress audioRef={audioRef} currentTrack={currentTrack} />
+      </motion.div>
     </>
   );
 }
-
-export type PlayerProps = HTMLProps<HTMLDivElement>;
