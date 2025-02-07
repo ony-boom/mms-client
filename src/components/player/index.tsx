@@ -65,7 +65,7 @@ export function Player() {
       <Audio currentTrack={currentTrack} ref={audioRef} />
       <motion.div
         className={
-          "with-blur fixed bottom-4 left-[50%] z-50 min-h-[81px] w-max translate-x-[-50%] overflow-hidden rounded-xl transition-all"
+          "with-blur fixed bottom-4 left-[50%] z-50 min-h-[81px] w-max translate-x-[-50%] overflow-hidden rounded-xl transition-all will-change-transform"
         }
       >
         <div className="relative flex items-center justify-between gap-16 p-4">

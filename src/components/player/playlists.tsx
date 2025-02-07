@@ -32,10 +32,10 @@ export function Playlists() {
 }
 
 const PlayListElement = memo(
-  ({ trackId }: { trackId: string; index: number }) => {
+  ({ trackId, index }: { trackId: string; index: number }) => {
     const { useTracks } = useApiClient();
     const { data } = useTracks({ id: trackId });
-    const { currentTrackId } = usePlayerStore();
+    const { currentTrackId, playTrackAtIndex } = usePlayerStore();
 
     const isCurrent = currentTrackId === trackId;
 
@@ -43,8 +43,15 @@ const PlayListElement = memo(
 
     const track = data[0];
 
+    const handleClick = () => {
+      playTrackAtIndex(index);
+    };
+
     return (
-      <li className="hover:bg-foreground/[5%] mt-2 flex cursor-pointer items-center justify-between px-4 py-2">
+      <li
+        className="hover:bg-foreground/[5%] mt-2 flex cursor-pointer items-center justify-between px-4 py-2"
+        onClick={handleClick}
+      >
         <div className="flex items-end gap-3">
           <TrackCover
             className="w-[48px] rounded-xl"
