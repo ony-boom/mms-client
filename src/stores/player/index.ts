@@ -111,7 +111,6 @@ export const usePlayerStore = create<PlayerState>()(
           return {
             isShuffle: newShuffleState,
             shuffleOrder,
-            ...updateCurrentTrack(state, state.playingIndex),
           };
         });
       },
