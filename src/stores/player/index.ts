@@ -124,7 +124,7 @@ export const usePlayerStore = create<PlayerState>()(
         state.playTrackAtIndex(randomIndex);
       },
 
-      playAfter: (id) => {
+      playAfter: (id, src) => {
         const state = get();
         const currentPlaylistOrder = state.isShuffle
           ? state.shuffleOrder
@@ -133,11 +133,15 @@ export const usePlayerStore = create<PlayerState>()(
 
         const sourceIndex = currentPlaylistOrder.indexOf(id);
 
-        if (sourceIndex === -1 || sourceIndex === currentIndex + 1) return;
+        const newPlaylistOrder = structuredClone(currentPlaylistOrder);
 
-        const newPlaylistOrder = [...currentPlaylistOrder];
-        const [removedId] = newPlaylistOrder.splice(sourceIndex, 1);
-        newPlaylistOrder.splice(currentIndex + 1, 0, removedId);
+        if (sourceIndex === -1 && src) {
+          set({ playlists: new Map([...state.playlists, [id, src]]) });
+          newPlaylistOrder.splice(currentIndex + 1, 0, id);
+        } else {
+          const [removedId] = newPlaylistOrder.splice(sourceIndex, 1);
+          newPlaylistOrder.splice(currentIndex + 1, 0, removedId);
+        }
 
         if (state.isShuffle) {
           set({ shuffleOrder: newPlaylistOrder });

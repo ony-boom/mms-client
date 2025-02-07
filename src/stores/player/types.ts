@@ -29,7 +29,7 @@ export interface PlayerStateActions {
   toggle: () => void;
   playNext: () => void;
   playPrev: () => void;
-  playAfter: (id: string) => void;
+  playAfter: (id: string, src?: string) => void;
   hasPrev: () => boolean;
   hasNext: () => boolean;
   toggleShuffle: (value?: boolean, shuffleAll?: boolean) => void;
