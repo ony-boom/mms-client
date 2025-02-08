@@ -133,6 +133,8 @@ export const usePlayerStore = create<PlayerState>()(
 
         const sourceIndex = currentPlaylistOrder.indexOf(id);
 
+        if (sourceIndex === currentIndex) return;
+
         const newPlaylistOrder = structuredClone(currentPlaylistOrder);
 
         if (sourceIndex === -1 && src) {
