@@ -58,12 +58,12 @@ export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div className="bg-primary group hover:bg-primary/90 flex items-center overflow-hidden rounded-full">
+        <div className="bg-primary group hover:bg-primary/90 flex items-center overflow-hidden rounded">
           <Button
             role="combobox"
             size={"sm"}
             aria-expanded={open}
-            className="justify-between rounded-full bg-transparent"
+            className="justify-between bg-transparent"
           >
             {getSortFieldLabel(value.field)}
           </Button>
@@ -73,7 +73,7 @@ export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
             size={"sm"}
             title={value.direction === SortOrder.ASC ? "Sort Desc" : "Sort Asc"}
             disabled={value?.field === TrackSortField.NONE}
-            className="rounded-full bg-transparent"
+            className="bg-transparent"
           >
             {value.direction === SortOrder.ASC ? <SortAsc /> : <SortDesc />}
           </Button>

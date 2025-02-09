@@ -2,9 +2,10 @@ import { memo, useRef } from "react";
 import { Separator } from "../ui/separator";
 import { usePlayerStore } from "@/stores";
 import { useApiClient } from "@/hooks";
-import { TrackCover } from "@/pages/Tracks/components/track-cover.tsx";
 import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import { WaveBars } from "./wave-bars";
+import { TrackContextMenu } from "@/components";
+import { TrackCover } from "@/pages/Tracks/components/track-cover";
 
 export function Playlists() {
   const { playlistOrder, shuffleOrder, isShuffle } = usePlayerStore();
@@ -48,27 +49,29 @@ const PlayListElement = memo(
     };
 
     return (
-      <li
-        className="hover:bg-foreground/[5%] mt-2 flex cursor-pointer items-center justify-between px-4 py-2"
-        onClick={handleClick}
-      >
-        <div className="flex items-end gap-3">
-          <TrackCover
-            className="w-[48px] rounded-xl"
-            trackId={track.id}
-            trackTitle={track.title}
-          />
+      <TrackContextMenu track={track}>
+        <li
+          className="hover:bg-foreground/[5%] mt-2 flex cursor-pointer items-center justify-between p-2"
+          onClick={handleClick}
+        >
+          <div className="flex items-end gap-3">
+            <TrackCover
+              className="w-12"
+              trackId={track.id}
+              trackTitle={track.title}
+            />
 
-          <div className="flex flex-col">
-            <small className="font-bold">{track.title}</small>
-            <small>
-              {track.artists.map((artist) => artist.name).join(", ")}
-            </small>
+            <div className="flex flex-col">
+              <small className="font-bold">{track.title}</small>
+              <small>
+                {track.artists.map((artist) => artist.name).join(", ")}
+              </small>
+            </div>
           </div>
-        </div>
 
-        {isCurrent && <WaveBars />}
-      </li>
+          {isCurrent && <WaveBars />}
+        </li>
+      </TrackContextMenu>
     );
   },
 );

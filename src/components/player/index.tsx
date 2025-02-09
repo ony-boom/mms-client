@@ -1,39 +1,24 @@
+import { Audio } from "./audio";
+import { cn } from "@/lib/utils";
 import { useApiClient } from "@/hooks";
 import { usePlayerStore } from "@/stores";
-import { type ElementRef, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button.tsx";
-import {
-  Heart,
-  Pause,
-  Play,
-  Shuffle,
-  SkipBack,
-  SkipForward,
-} from "lucide-react";
-import { Audio } from "./audio";
+import { Controller } from "./controller";
 import { TrackProgress } from "./track-progress";
-import { TrackCover } from "@/pages/Tracks/components/track-cover";
-import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { Maximize2 as Maximize } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { Playlists } from "@/components/player/playlists.tsx";
-import { cn } from "@/lib/utils.ts";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { Playlists } from "@/components/player/playlists";
+import { TrackCover } from "@/pages/Tracks/components/track-cover";
+import { type ElementRef, useEffect, useRef, useState } from "react";
 
 export function Player() {
-  const [expanded, setExpanded] = useState(false);
+  const [playlistsExpanded, setPlaylistsExpanded] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setOpenFullScreen] = useState(false);
+
   const { useTracks } = useApiClient();
-  const {
-    isPlaying,
-    src,
-    currentTrackId,
-    toggle,
-    playNext,
-    playPrev,
-    toggleShuffle,
-    isShuffle,
-    hasNext,
-    hasPrev,
-    getCurrentPlaylist,
-  } = usePlayerStore();
+  const { isPlaying, src, currentTrackId } = usePlayerStore();
   const audioRef = useRef<ElementRef<"audio">>(null);
 
   const { data } = useTracks({
@@ -41,10 +26,6 @@ export function Player() {
   });
 
   const currentTrack = data?.length === 1 ? data[0] : undefined;
-
-  const handleShuffle = () => {
-    toggleShuffle();
-  };
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -60,23 +41,48 @@ export function Player() {
     }
   }, [isPlaying, src]);
 
+  const handleFullScreenToggle = (value?: boolean) => {
+    setOpenFullScreen(value ?? ((prev) => !prev));
+  };
+
   return (
     <>
       <Audio currentTrack={currentTrack} ref={audioRef} />
       <motion.div
         className={
-          "with-blur fixed bottom-4 left-[50%] z-50 min-h-[81px] w-max translate-x-[-50%] overflow-hidden rounded-xl transition-all will-change-transform"
+          "with-blur fixed bottom-4 left-[50%] z-50 min-h-[81px] w-max translate-x-[-50%] overflow-hidden rounded transition-all will-change-transform"
         }
       >
-        <div className="relative flex items-center justify-between gap-16 p-4">
+        <div className="mt-2 flex justify-center">
+          <button
+            className={cn(
+              "bg-foreground/20 hover:bg-foreground/30 h-1 w-12 cursor-pointer rounded-full outline-0 transition-all hover:w-16",
+              {
+                "w-20": playlistsExpanded,
+              },
+            )}
+            onClick={() => setPlaylistsExpanded((prev) => !prev)}
+          ></button>
+        </div>
+        <div className="relative flex items-center justify-between gap-16 px-2 pt-0 pb-4">
           <div aria-labelledby="track info" className="flex items-end gap-4">
             {currentTrack ? (
               <>
-                <TrackCover
-                  className="w-[72px] rounded-xl"
-                  trackId={currentTrack.id!}
-                  trackTitle={currentTrack.title}
-                />
+                <div className="group relative">
+                  <TrackCover
+                    className="w-20 rounded-md"
+                    trackId={currentTrack.id!}
+                    trackTitle={currentTrack.title}
+                  />
+
+                  <Button
+                    size={"icon"}
+                    onClick={() => handleFullScreenToggle(true)}
+                    className="absolute right-0 bottom-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                  >
+                    <Maximize />
+                  </Button>
+                </div>
 
                 <div className="animate-fade-in">
                   <p
@@ -102,59 +108,11 @@ export function Player() {
               </div>
             )}
           </div>
-          <div aria-labelledby="controller" className="flex items-center gap-2">
-            <Button disabled size="icon" variant="ghost">
-              <Heart />
-            </Button>
-            <Button
-              onClick={handleShuffle}
-              className={isShuffle ? "text-foreground" : "text-foreground/50"}
-              size="icon"
-              variant="ghost"
-              disabled={getCurrentPlaylist().length === 0}
-            >
-              <Shuffle />
-            </Button>
-            <Button
-              onClick={playPrev}
-              disabled={!hasPrev() || !currentTrackId}
-              size="icon"
-              variant="ghost"
-            >
-              <SkipBack />
-            </Button>
-            <Button
-              disabled={!currentTrack}
-              onClick={toggle}
-              size="icon"
-              className="rounded-full"
-            >
-              {isPlaying ? <Pause /> : <Play />}
-            </Button>
-            <Button
-              onClick={playNext}
-              disabled={!hasNext() || !currentTrackId}
-              size="icon"
-              variant="ghost"
-            >
-              <SkipForward />
-            </Button>
-          </div>
-          <div className="absolute top-1 left-[50%] translate-x-[-50%]">
-            <button
-              className={cn(
-                "bg-foreground/20 hover:bg-foreground/30 h-1 w-12 cursor-pointer rounded-full outline-0 transition-all hover:w-16",
-                {
-                  "w-20": expanded,
-                },
-              )}
-              onClick={() => setExpanded((prev) => !prev)}
-            ></button>
-          </div>
+          <Controller shouldPlay={!currentTrack} />
         </div>
 
         <AnimatePresence>
-          {expanded && (
+          {playlistsExpanded && (
             <motion.div
               key="playlists"
               initial={{
@@ -162,6 +120,7 @@ export function Player() {
               }}
               animate={{ height: "auto" }}
               exit={{ height: 0 }}
+              layout
             >
               <Playlists />
             </motion.div>

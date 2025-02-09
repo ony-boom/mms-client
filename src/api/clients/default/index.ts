@@ -46,6 +46,7 @@ export const defaultApi: Api = {
     return trackIds.map((trackId) => `${BASE_URL}/api/audio/${trackId}`);
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   useTrackLoadEvent: (_debounce) => {
     const [state, setState] = useState<LoadedTracks>({
       current: 0,

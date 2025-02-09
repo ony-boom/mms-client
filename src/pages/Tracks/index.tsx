@@ -129,7 +129,7 @@ export function Tracks() {
   return (
     <div className="pl-4">
       <PageTitle title="Tracks" />
-      <div className="bg-background/80 border-border flex w-max items-center gap-2 rounded-full border px-2 py-1">
+      <div className="bg-background/80 border-border flex w-max items-center gap-2 rounded border px-2 py-1">
         <Input
           ref={searchInputRef}
           placeholder="Search..."
@@ -144,7 +144,6 @@ export function Tracks() {
           disabled={!data || data.length < 2}
           onClick={handleShuffle}
           size="sm"
-          className="rounded-full"
         >
           Shuffle <Shuffle className="h-4 w-4" />
         </Button>

@@ -4,13 +4,7 @@ import { usePlayerStore } from "@/stores";
 import { TrackCover } from "./track-cover";
 import { Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  ContextMenu,
-  ContextMenuItem,
-  ContextMenuTrigger,
-  ContextMenuContent,
-} from "@/components/ui/context-menu";
-import { Redo2, CircleUserRound, Disc } from "lucide-react";
+import { TrackContextMenu } from "@/components";
 
 function Card({ track, index, onTrackPlay }: TrackCardProps) {
   const artistNames = track.artists.map((artist) => artist.name).join(", ");
@@ -22,54 +16,27 @@ function Card({ track, index, onTrackPlay }: TrackCardProps) {
     onTrackPlay(index, track.id);
   };
 
-  const onPlayNextClick = () => {
-    player.playAfter(track.id);
-  };
-
   return (
     <div className="group relative flex flex-col gap-1">
-      <ContextMenu>
-        <ContextMenuTrigger>
-          <TrackCover
-            className="mb-2"
-            trackId={track.id}
-            trackTitle={track.title}
-          />
-          <p
-            title={track.title}
-            className="overflow-hidden font-bold text-nowrap text-ellipsis"
-          >
-            {track.title}
-          </p>
-          <p
-            title={artistNames}
-            className="overflow-hidden text-sm text-nowrap text-ellipsis"
-          >
-            {artistNames}
-          </p>
-        </ContextMenuTrigger>
-        <ContextMenuContent className="with-blur w-36 space-y-1 p-0 transition-all">
-          <ContextMenuItem
-            className="data-[highlighted]:bg-accent/60 w-full"
-            onClick={onPlayNextClick}
-            disabled={!player.currentTrackId}
-          >
-            Play next
-            <Redo2 size={16} className="ml-auto" />
-          </ContextMenuItem>
-
-          <ContextMenuItem className="data-[highlighted]:bg-accent/60 w-full">
-            Go to artist
-            <CircleUserRound size={16} className="ml-auto" />
-          </ContextMenuItem>
-
-          <ContextMenuItem className="data-[highlighted]:bg-accent/60 w-full">
-            Go to album
-            <Disc size={16} className="ml-auto" />
-          </ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
-
+      <TrackContextMenu track={track}>
+        <TrackCover
+          className="mb-2"
+          trackId={track.id}
+          trackTitle={track.title}
+        />
+        <p
+          title={track.title}
+          className="overflow-hidden font-bold text-nowrap text-ellipsis"
+        >
+          {track.title}
+        </p>
+        <p
+          title={artistNames}
+          className="overflow-hidden text-sm text-nowrap text-ellipsis"
+        >
+          {artistNames}
+        </p>
+      </TrackContextMenu>
       <Button
         size="icon"
         onClick={onPlayButtonClick}
