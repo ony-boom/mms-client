@@ -1,11 +1,11 @@
 import type { Api } from "@/api/Api";
 import { createClient } from "graphql-sse";
 import { useEffect, useState } from "react";
-import { LoadedTracks, Track } from "@/api";
+import { LoadedTracks, LyricsResponse, Track } from "@/api";
 import { CACHE_KEY } from "@/api/constant.ts";
 import { axiosClient, BASE_URL } from "./axios-client";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { GET_TRACKS, LOAD_TRACK, TRACK_LOAD } from "./queries";
+import { GET_LYRICS, GET_TRACKS, LOAD_TRACK, TRACK_LOAD } from "./queries";
 
 export const defaultApi: Api = {
   useTracks: (where, sortBy) => {
@@ -80,5 +80,21 @@ export const defaultApi: Api = {
     }, []);
 
     return state;
+  },
+
+  useTrackLyrics(trackId) {
+    return useQuery<LyricsResponse>({
+      queryKey: [CACHE_KEY.LYRICS, trackId],
+      queryFn: async () => {
+        const { data: responseData } = await axiosClient.post<{
+          data: { lyrics: LyricsResponse };
+        }>("/graphql", {
+          query: GET_LYRICS,
+          variables: { trackId },
+        });
+
+        return responseData.data.lyrics;
+      },
+    });
   },
 };

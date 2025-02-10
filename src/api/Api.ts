@@ -1,5 +1,5 @@
 import type { UseQueryResult, UseMutationResult } from "@tanstack/react-query";
-import { LoadedTracks, SortOrder, Track, TrackSortField } from "@/api/types.ts";
+import { LoadedTracks, LyricsResponse, SortOrder, Track, TrackSortField } from "@/api/types.ts";
 
 export type GetTrackWhereInput = {
   id?: string;
@@ -20,6 +20,7 @@ export interface Api {
   ) => UseQueryResult<Track[]>;
 
   useLoadTracks: () => UseMutationResult<boolean>;
+  useTrackLyrics: (trackId: string) => UseQueryResult<LyricsResponse>;
 
   getTrackCoverSrc: (trackId: string) => string;
   getTrackAudioSrc: (trackIds: string[]) => string[];

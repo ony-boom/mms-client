@@ -74,6 +74,9 @@ importers:
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
+      lrc-kit:
+        specifier: ^1.1.1
+        version: 1.1.1
       lucide-react:
         specifier: ^0.473.0
         version: 0.473.0(react@18.3.1)
@@ -1814,6 +1817,9 @@ packages:
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
+
+  lrc-kit@1.1.1:
+    resolution: {integrity: sha512-n7wRGLWWyjIXpgo4iZQkce/wzZlNUO7dzZKHvwZjFK3e4QaKYyVYasMfN6adpoOibkVVV2TniuGfAlqYf3vngg==}
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
@@ -3856,6 +3862,8 @@ snapshots:
   loose-envify@1.4.0:
     dependencies:
       js-tokens: 4.0.0
+
+  lrc-kit@1.1.1: {}
 
   lru-cache@5.1.1:
     dependencies:

@@ -9,6 +9,11 @@ export type Track = {
 
 export type LoadedTracks = { current: number; total: number; };
 
+export type LyricsResponse = {
+  isSync: boolean;
+  text: string;
+};
+
 export type Artist = {
   id: string;
   name: string;

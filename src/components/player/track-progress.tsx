@@ -23,7 +23,7 @@ export const TrackProgress = memo(
       <Progress
         value={progress}
         onClick={onProgressClick}
-        className="absolute bottom-0 left-0 z-50 h-1 w-full bg-transparent transition-all hover:h-[6px] hover:cursor-pointer"
+        className="rounded-none absolute bottom-0 left-0 z-50 h-1 w-full bg-transparent transition-all hover:h-[6px] hover:cursor-pointer"
       />
     );
   },

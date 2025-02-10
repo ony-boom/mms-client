@@ -86,7 +86,7 @@
     @apply !min-w-full;
   }
 
-  [data-virtuoso-scroller="true"] {
+  [data-virtuoso-scroller="true"], [data-scroller="true"] {
     @apply border-border;
 
     scrollbar-width: thin;
@@ -96,5 +96,5 @@
 }
 
 .with-blur {
-  @apply bg-background/80 border-border/20 border shadow-xl backdrop-blur backdrop-brightness-50;
+  @apply bg-background/80 shadow-xl backdrop-blur backdrop-brightness-50;
 }
