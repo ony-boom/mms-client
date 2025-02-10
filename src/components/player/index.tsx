@@ -10,41 +10,23 @@ import { motion, AnimatePresence, type Variants } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { Playlists } from "@/components/player/playlists";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
-import { type ElementRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, ElementRef } from "react";
 import { Lyrics } from "./lyrics";
+import { Track } from "@/api";
 
 export function Player() {
   const [playlistsExpanded, setPlaylistsExpanded] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [openFullScreen, setOpenFullScreen] = useState(false);
-
   const { useTracks } = useApiClient();
   const { isPlaying, src, currentTrackId } = usePlayerStore();
   const audioRef = useRef<ElementRef<"audio">>(null);
-
-  const { data } = useTracks({
-    id: currentTrackId,
-  });
-
-  const currentTrack = data?.length === 1 ? data[0] : undefined;
+  const { data } = useTracks({ id: currentTrackId });
+  const currentTrack = data?.[0];
 
   useEffect(() => {
     if (!audioRef.current) return;
-    const audioElement = audioRef.current;
-
-    if (isPlaying) {
-      audioElement.play().then(() => {
-        navigator.mediaSession.playbackState = "playing";
-      });
-    } else {
-      audioElement.pause();
-      navigator.mediaSession.playbackState = "paused";
-    }
+    isPlaying ? audioRef.current.play() : audioRef.current.pause();
   }, [isPlaying, src]);
-
-  const handleFullScreenToggle = (value?: boolean) => {
-    setOpenFullScreen(value ?? ((prev) => !prev));
-  };
 
   return (
     <>
@@ -52,90 +34,51 @@ export function Player() {
       <motion.div
         id="player"
         layout
-        variants={playerVariants}
         initial="initial"
         animate="animate"
         custom={openFullScreen}
-        className="with-blur fixed left-[50%] z-50 flex max-h-screen translate-x-[-50%] flex-col rounded overflow-hidden will-change-transform"
+        variants={playerVariants}
+        className="with-blur fixed left-[50%] z-50 flex max-h-screen translate-x-[-50%] flex-col overflow-hidden rounded"
       >
         <AnimatePresence>
           {openFullScreen && (
-            <motion.div>
+            <motion.div
+              key="lyrics"
+              layout
+              variants={lyricsVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              data-scroller
+              className="overflow-y-auto"
+            >
               <Lyrics />
             </motion.div>
           )}
         </AnimatePresence>
-        <motion.div
-          className={cn("with-blur sticky bottom-0", {
-            "overflow-hidden": !openFullScreen,
+        <div
+          className={cn("mt-auto", {
+            "mx-auto max-w-max":
+              openFullScreen,
           })}
         >
-          <div className="mt-2 flex justify-center">
-            <button
-              className={cn(
-                "bg-foreground/20 hover:bg-foreground/30 h-1 w-12 cursor-pointer rounded-full outline-0 transition-all hover:w-16",
-                {
-                  "w-20": playlistsExpanded,
-                },
-              )}
+          <motion.div className="mt-2 flex justify-center">
+            <motion.button
+              className="bg-foreground/20 hover:bg-foreground/30 h-1 cursor-pointer rounded-full"
+              variants={handleVariants}
+              animate={playlistsExpanded ? "expanded" : "collapsed"}
               onClick={() => setPlaylistsExpanded((prev) => !prev)}
-            ></button>
-          </div>
-
+            />
+          </motion.div>
           <div className="relative flex items-center justify-between gap-16 px-2 pt-0 pb-4">
-            <motion.div
-              layout
-              aria-labelledby="track info"
-              className="flex items-end gap-4"
-            >
-              {currentTrack ? (
-                <>
-                  <div className="group relative">
-                    <TrackCover
-                      className={"w-20"}
-                      trackId={currentTrack.id!}
-                      trackTitle={currentTrack.title}
-                    />
-
-                    <Button
-                      size={"icon"}
-                      onClick={() => handleFullScreenToggle()}
-                      className="absolute right-0 bottom-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                    >
-                      {openFullScreen ? <Minimize /> : <Maximize />}
-                    </Button>
-                  </div>
-
-                  <div className="animate-fade-in max-w-[148px]">
-                    <p
-                      title={currentTrack.title}
-                      className="overflow-hidden font-bold text-nowrap text-ellipsis"
-                    >
-                      {currentTrack.title}
-                    </p>
-                    <small className="overflow-hidden text-nowrap text-ellipsis">
-                      {currentTrack.artists
-                        .map((artist) => artist.name)
-                        .join(", ")}
-                    </small>
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-end gap-4">
-                  <div className="bg-muted aspect-square w-[72px] rounded-xl"></div>
-                  <div>
-                    <Skeleton className="w-[128px]" />
-                    <Skeleton className="w-[128px]" />
-                  </div>
-                </div>
-              )}
-            </motion.div>
-
+            <TrackInfo
+              currentTrack={currentTrack!}
+              openFullScreen={openFullScreen}
+              onFullScreenToggle={() => setOpenFullScreen((prev) => !prev)}
+            />
             <Controller shouldPlay={!currentTrack} />
           </div>
-
           <TrackProgress audioRef={audioRef} currentTrack={currentTrack} />
-
           <AnimatePresence>
             {playlistsExpanded && (
               <motion.div
@@ -144,53 +87,113 @@ export function Player() {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                layout
+                layout="position"
               >
                 <Playlists />
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+        </div>
       </motion.div>
     </>
   );
 }
 
+const TrackInfo = ({
+  currentTrack,
+  openFullScreen,
+  onFullScreenToggle,
+}: {
+  currentTrack: Track;
+  openFullScreen: boolean;
+  onFullScreenToggle: () => void;
+}) => (
+  <motion.div
+    aria-labelledby="track info"
+    className="flex items-end gap-4"
+    variants={trackInfoVariants}
+    initial="initial"
+    animate="animate"
+  >
+    {currentTrack ? (
+      <>
+        <div className="group relative">
+          <TrackCover
+            className="w-20"
+            trackId={currentTrack.id}
+            trackTitle={currentTrack.title}
+          />
+          <Button
+            size="icon"
+            onClick={onFullScreenToggle}
+            className="absolute right-0 bottom-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+          >
+            {openFullScreen ? <Minimize /> : <Maximize />}
+          </Button>
+        </div>
+        <div className="max-w-[148px] text-nowrap">
+          <p className="overflow-hidden font-bold text-ellipsis">
+            {currentTrack.title}
+          </p>
+          <small className="overflow-hidden text-ellipsis">
+            {currentTrack.artists.map((artist) => artist.name).join(", ")}
+          </small>
+        </div>
+      </>
+    ) : (
+      <motion.div className="flex items-end gap-4" variants={skeletonVariants}>
+        <div className="bg-muted aspect-square w-20 rounded-xl" />
+        <div className="max-w-[148px]">
+          <Skeleton className="w-full" />
+          <Skeleton className="w-full" />
+        </div>
+      </motion.div>
+    )}
+  </motion.div>
+);
+
 const playerVariants: Variants = {
-  initial: {
-    opacity: 0,
-    bottom: 16,
-  },
+  initial: { opacity: 0, bottom: 16, width: 500, minHeight: 0 },
   animate: (openFullScreen: boolean) => ({
     opacity: 1,
     bottom: openFullScreen ? 0 : 16,
-    height: openFullScreen ? "100vh" : "auto",
-    width: openFullScreen ? "100%" : "max-content",
-    transition: {
-      duration: 0.3,
-      opacity: {
-        duration: 0.2,
-      },
-    },
+    width: openFullScreen ? "100%" : 500,
+    overflow: "hidden",
+    // transition: { type: "spring", stiffness: 100, damping: 20 },
   }),
 };
 
-const playlistVariants: Variants = {
-  initial: {
-    height: 0,
-  },
+const lyricsVariants = {
+  initial: { height: 0, opacity: 0 },
   animate: {
-    height: "auto",
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
+    height: "100vh",
+    opacity: 1,
   },
   exit: {
     height: 0,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
+    opacity: 0,
+    // transition: { type: "spring", stiffness: 100, damping: 20 },
   },
+};
+
+const playlistVariants = {
+  initial: { height: 0 },
+  animate: {
+    height: "auto",
+    // transition: { type: "spring", stiffness: 100, damping: 20 },
+  },
+  exit: {
+    height: 0,
+    // transition: { type: "spring", stiffness: 100, damping: 20 },
+  },
+};
+const handleVariants = { collapsed: { width: 48 }, expanded: { width: 80 } };
+const trackInfoVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.3 } },
+};
+
+const skeletonVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
