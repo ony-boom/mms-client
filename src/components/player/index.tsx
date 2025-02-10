@@ -167,7 +167,6 @@ const playerVariants: Variants = {
     height: openFullScreen ? "100vh" : "auto",
     width: openFullScreen ? "100%" : "max-content",
     transition: {
-      type: "spring",
       duration: 0.3,
       opacity: {
         duration: 0.2,
