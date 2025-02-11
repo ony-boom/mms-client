@@ -5,7 +5,7 @@ import { usePlayerStore } from "@/stores";
 import { Controller } from "./controller";
 import { TrackProgress } from "./track-progress";
 import { Button } from "@/components/ui/button.tsx";
-import { Maximize2 as Maximize, Minimize2 as Minimize } from "lucide-react";
+import { MessageSquareQuote } from "lucide-react";
 import { motion, AnimatePresence, type Variants } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { Playlists } from "@/components/player/playlists";
@@ -16,7 +16,7 @@ import { Track } from "@/api";
 
 export function Player() {
   const [playlistsExpanded, setPlaylistsExpanded] = useState(false);
-  const [openFullScreen, setOpenFullScreen] = useState(false);
+  const [openLyricsView, setOpenLyricsView] = useState(false);
   const { useTracks } = useApiClient();
   const { isPlaying, src, currentTrackId } = usePlayerStore();
   const audioRef = useRef<ElementRef<"audio">>(null);
@@ -25,7 +25,11 @@ export function Player() {
 
   useEffect(() => {
     if (!audioRef.current) return;
-    isPlaying ? audioRef.current.play() : audioRef.current.pause();
+    if (isPlaying && src) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
   }, [isPlaying, src]);
 
   return (
@@ -36,12 +40,12 @@ export function Player() {
         layout
         initial="initial"
         animate="animate"
-        custom={openFullScreen}
+        custom={openLyricsView}
         variants={playerVariants}
         className="with-blur fixed left-[50%] z-50 flex max-h-screen translate-x-[-50%] flex-col overflow-hidden rounded"
       >
         <AnimatePresence>
-          {openFullScreen && (
+          {openLyricsView && (
             <motion.div
               key="lyrics"
               layout
@@ -58,8 +62,7 @@ export function Player() {
         </AnimatePresence>
         <div
           className={cn("mt-auto", {
-            "mx-auto max-w-max":
-              openFullScreen,
+            "mx-auto max-w-max": openLyricsView,
           })}
         >
           <motion.div className="mt-2 flex justify-center">
@@ -73,8 +76,8 @@ export function Player() {
           <div className="relative flex items-center justify-between gap-16 px-2 pt-0 pb-4">
             <TrackInfo
               currentTrack={currentTrack!}
-              openFullScreen={openFullScreen}
-              onFullScreenToggle={() => setOpenFullScreen((prev) => !prev)}
+              openLyricsView={openLyricsView}
+              onFullScreenToggle={() => setOpenLyricsView((prev) => !prev)}
             />
             <Controller shouldPlay={!currentTrack} />
           </div>
@@ -101,16 +104,16 @@ export function Player() {
 
 const TrackInfo = ({
   currentTrack,
-  openFullScreen,
+  openLyricsView,
   onFullScreenToggle,
 }: {
   currentTrack: Track;
-  openFullScreen: boolean;
+  openLyricsView: boolean;
   onFullScreenToggle: () => void;
 }) => (
   <motion.div
     aria-labelledby="track info"
-    className="flex items-end gap-4 shrink-0"
+    className="flex shrink-0 items-end gap-4"
     variants={trackInfoVariants}
     initial="initial"
     animate="animate"
@@ -125,10 +128,11 @@ const TrackInfo = ({
           />
           <Button
             size="icon"
+            title={openLyricsView ? "Hide lyrics" : "Show lyrics"}
             onClick={onFullScreenToggle}
-            className="absolute right-0 bottom-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+            className="absolute right-0 bottom-0 opacity-0 transition-opacity group-hover:opacity-100"
           >
-            {openFullScreen ? <Minimize /> : <Maximize />}
+            {<MessageSquareQuote />}
           </Button>
         </div>
         <div className="max-w-[148px] text-nowrap">
@@ -153,11 +157,11 @@ const TrackInfo = ({
 );
 
 const playerVariants: Variants = {
-  initial: { opacity: 0, bottom: 16, width: 500 },
+  initial: { opacity: 0, bottom: 16, width: "clamp(500px, 100%, 580px)" },
   animate: (openFullScreen: boolean) => ({
     opacity: 1,
     bottom: openFullScreen ? 0 : 16,
-    width: openFullScreen ? "100%" : 500,
+    width: openFullScreen ? "100%" : "clamp(500px, 100%, 580px)",
     overflow: "hidden",
     // transition: { type: "spring", stiffness: 100, damping: 20 },
   }),
