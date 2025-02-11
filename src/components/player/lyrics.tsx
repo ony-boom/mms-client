@@ -15,10 +15,13 @@ export function Lyrics() {
     () => data || { isSync: false, text: "" },
     [data],
   );
-  const lrc = useMemo(
-    () => (lyrics.text && lyrics.isSync ? Lrc.parse(lyrics.text) : null),
-    [lyrics],
-  );
+  const lrc = useMemo(() => {
+    if (!lyrics.text) return null;
+    if (lyrics.isSync) return Lrc.parse(lyrics.text);
+    const tryParse = Lrc.parse(lyrics.text);
+
+    return tryParse.lyrics.length ? tryParse : lyrics.text;
+  }, [lyrics]);
 
   const activeLyricRef = useRef<HTMLParagraphElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -66,7 +69,7 @@ export function Lyrics() {
       }}
       className="w-full space-y-4 overflow-auto p-12 text-3xl font-black"
     >
-      {lyrics.isSync ? (
+      {typeof lrc !== "string" ? (
         lrc!.lyrics.map((lyric, index) => {
           const nextTimestamp = lrc!.lyrics[index + 1]?.timestamp ?? Infinity;
           const isActive =

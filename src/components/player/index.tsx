@@ -110,7 +110,7 @@ const TrackInfo = ({
 }) => (
   <motion.div
     aria-labelledby="track info"
-    className="flex items-end gap-4"
+    className="flex items-end gap-4 shrink-0"
     variants={trackInfoVariants}
     initial="initial"
     animate="animate"
@@ -153,7 +153,7 @@ const TrackInfo = ({
 );
 
 const playerVariants: Variants = {
-  initial: { opacity: 0, bottom: 16, width: 500, minHeight: 0 },
+  initial: { opacity: 0, bottom: 16, width: 500 },
   animate: (openFullScreen: boolean) => ({
     opacity: 1,
     bottom: openFullScreen ? 0 : 16,
