@@ -39,6 +39,8 @@ export function Lyrics() {
           block: "center",
         });
       }
+    }, {
+      threshold: 0.1,
     });
 
     if (activeLyricRef.current) {

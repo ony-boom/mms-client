@@ -9,7 +9,7 @@ import {
 import { usePlayerStore } from "@/stores";
 import { Button } from "@/components/ui/button";
 
-export function Controller({shouldPlay}: ControllerProps) {
+export function Controller({ shouldPlay }: ControllerProps) {
   const {
     isPlaying,
     currentTrackId,
@@ -26,6 +26,7 @@ export function Controller({shouldPlay}: ControllerProps) {
   const handleShuffle = () => {
     toggleShuffle();
   };
+
   return (
     <div aria-labelledby="controller" className="flex items-center gap-2">
       <Button disabled size="icon" variant="ghost">

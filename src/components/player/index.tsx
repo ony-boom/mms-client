@@ -1,5 +1,4 @@
 import { Audio } from "./audio";
-import { cn } from "@/lib/utils";
 import { useApiClient } from "@/hooks";
 import { usePlayerStore } from "@/stores";
 import { Controller } from "./controller";
@@ -13,6 +12,7 @@ import { TrackCover } from "@/pages/Tracks/components/track-cover";
 import { useEffect, useRef, useState, ElementRef } from "react";
 import { Lyrics } from "./lyrics";
 import { Track } from "@/api";
+import { cn } from "@/lib/utils";
 
 export function Player() {
   const [playlistsExpanded, setPlaylistsExpanded] = useState(false);
@@ -34,70 +34,63 @@ export function Player() {
 
   return (
     <>
+      <AnimatePresence>
+        {openLyricsView && (
+          <motion.div
+            key="lyrics"
+            variants={lyricsVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            data-scroller
+            className="with-blur fixed bottom-0 left-1/2 z-40 origin-bottom overflow-y-auto"
+            style={{ transformOrigin: "bottom center" }}
+          >
+            <Lyrics />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Audio currentTrack={currentTrack} ref={audioRef} />
-      <motion.div
+      <div
         id="player"
-        layout
-        initial="initial"
-        animate="animate"
-        custom={openLyricsView}
-        variants={playerVariants}
-        className="with-blur fixed left-[50%] z-50 flex max-h-screen translate-x-[-50%] flex-col overflow-hidden rounded"
+        className="with-blur fixed bottom-4 left-[50%] z-50 flex min-w-xl translate-x-[-50%] flex-col overflow-hidden rounded"
       >
+        <div className="mt-2 flex justify-center">
+          <button
+            className={cn(
+              "bg-foreground/20 hover:bg-foreground/30 py-1 w-16 cursor-pointer rounded transition-all hover:w-20",
+              {
+                "w-24": playlistsExpanded,
+              },
+            )}
+            onClick={() => setPlaylistsExpanded((prev) => !prev)}
+          />
+        </div>
+        <div className="relative flex items-center justify-between gap-16 px-3 pt-1 pb-4">
+          <TrackInfo
+            currentTrack={currentTrack!}
+            openLyricsView={openLyricsView}
+            onFullScreenToggle={() => setOpenLyricsView((prev) => !prev)}
+          />
+          <Controller shouldPlay={!currentTrack} />
+        </div>
+        <TrackProgress audioRef={audioRef} currentTrack={currentTrack} />
         <AnimatePresence>
-          {openLyricsView && (
+          {playlistsExpanded && (
             <motion.div
-              key="lyrics"
-              layout
-              variants={lyricsVariants}
+              key="playlists"
+              variants={playlistVariants}
               initial="initial"
               animate="animate"
               exit="exit"
-              data-scroller
-              className="overflow-y-auto"
+              layout="position"
             >
-              <Lyrics />
+              <Playlists />
             </motion.div>
           )}
         </AnimatePresence>
-        <div
-          className={cn("mt-auto", {
-            "mx-auto max-w-max": openLyricsView,
-          })}
-        >
-          <motion.div className="mt-2 flex justify-center">
-            <motion.button
-              className="bg-foreground/20 hover:bg-foreground/30 h-1 cursor-pointer rounded-full"
-              variants={handleVariants}
-              animate={playlistsExpanded ? "expanded" : "collapsed"}
-              onClick={() => setPlaylistsExpanded((prev) => !prev)}
-            />
-          </motion.div>
-          <div className="relative flex items-center justify-between gap-16 px-2 pt-0 pb-4">
-            <TrackInfo
-              currentTrack={currentTrack!}
-              openLyricsView={openLyricsView}
-              onFullScreenToggle={() => setOpenLyricsView((prev) => !prev)}
-            />
-            <Controller shouldPlay={!currentTrack} />
-          </div>
-          <TrackProgress audioRef={audioRef} currentTrack={currentTrack} />
-          <AnimatePresence>
-            {playlistsExpanded && (
-              <motion.div
-                key="playlists"
-                variants={playlistVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                layout="position"
-              >
-                <Playlists />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.div>
+      </div>
     </>
   );
 }
@@ -122,7 +115,7 @@ const TrackInfo = ({
       <>
         <div className="group relative">
           <TrackCover
-            className="w-20"
+            className="w-24"
             trackId={currentTrack.id}
             trackTitle={currentTrack.title}
           />
@@ -146,7 +139,7 @@ const TrackInfo = ({
       </>
     ) : (
       <motion.div className="flex items-end gap-4" variants={skeletonVariants}>
-        <div className="bg-muted aspect-square w-20 rounded-xl" />
+        <div className="bg-muted aspect-square w-24 rounded-xl" />
         <div className="max-w-[148px]">
           <Skeleton className="w-full" />
           <Skeleton className="w-full" />
@@ -156,48 +149,56 @@ const TrackInfo = ({
   </motion.div>
 );
 
-const playerVariants: Variants = {
-  initial: { opacity: 0, bottom: 16, width: "clamp(500px, 100%, 580px)" },
-  animate: (openFullScreen: boolean) => ({
-    opacity: 1,
-    bottom: openFullScreen ? 0 : 16,
-    width: openFullScreen ? "100%" : "clamp(500px, 100%, 580px)",
-    overflow: "hidden",
-    // transition: { type: "spring", stiffness: 100, damping: 20 },
-  }),
-};
-
-const lyricsVariants = {
-  initial: { height: 0, opacity: 0 },
+const lyricsVariants: Variants = {
+  initial: {
+    height: 0,
+    width: 0,
+    opacity: 0,
+    x: "-50%",
+    bottom: 0,
+  },
   animate: {
     height: "100vh",
+    width: "100vw",
     opacity: 1,
+    x: "-50%",
+    bottom: 0,
+    transition: {
+      type: "tween",
+      duration: 0.3,
+      ease: "easeInOut",
+    },
   },
   exit: {
     height: 0,
+    width: 0,
     opacity: 0,
-    // transition: { type: "spring", stiffness: 100, damping: 20 },
+    x: "-50%",
+    bottom: 0,
+    transition: {
+      type: "tween",
+      duration: 0.3,
+      ease: "easeInOut",
+    },
   },
 };
 
-const playlistVariants = {
+const playlistVariants: Variants = {
   initial: { height: 0 },
   animate: {
     height: "auto",
-    // transition: { type: "spring", stiffness: 100, damping: 20 },
   },
   exit: {
     height: 0,
-    // transition: { type: "spring", stiffness: 100, damping: 20 },
   },
 };
-const handleVariants = { collapsed: { width: 48 }, expanded: { width: 80 } };
+
 const trackInfoVariants = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { duration: 0.3 } },
 };
 
-const skeletonVariants = {
+const skeletonVariants: Variants = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
