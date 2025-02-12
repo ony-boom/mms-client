@@ -127,30 +127,32 @@ export function Tracks() {
   }
 
   return (
-    <div className="pl-4">
-      <PageTitle title="Tracks" />
-      <div className="bg-background/80 border-border flex w-max items-center gap-2 rounded border px-2 py-1">
-        <Input
-          ref={searchInputRef}
-          placeholder="Search..."
-          className="w-max border-none shadow-none focus-visible:ring-0"
-          value={trackSearch}
-          onChange={onTrackSearchChange}
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
-        />
-        <TrackMenuSort value={trackSort} onValueChange={onSortChange} />
-        <Button
-          disabled={!data || data.length < 2}
-          onClick={handleShuffle}
-          size="sm"
-        >
-          Shuffle <Shuffle className="h-4 w-4" />
-        </Button>
+    <>
+      <div className="px-4">
+        <PageTitle title="Tracks" />
+        <div className="bg-background/80 border-border flex w-max items-center gap-2 rounded border px-2 py-1">
+          <Input
+            ref={searchInputRef}
+            placeholder="Search..."
+            className="w-max border-none shadow-none focus-visible:ring-0"
+            value={trackSearch}
+            onChange={onTrackSearchChange}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+          />
+          <TrackMenuSort value={trackSort} onValueChange={onSortChange} />
+          <Button
+            disabled={!data || data.length < 2}
+            onClick={handleShuffle}
+            size="sm"
+          >
+            Shuffle <Shuffle className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
       <div className="mt-4">
         <TracksGrid onTrackPlay={handleTrackPlay} tracks={data ?? []} />
       </div>
-    </div>
+    </>
   );
 }

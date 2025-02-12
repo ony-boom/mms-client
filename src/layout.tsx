@@ -25,7 +25,7 @@ function Layout() {
         onOpenChange={handleSidebarOpenChange}
       >
         <AppSidebar />
-        <main className="ml-1 w-full">
+        <main className="w-full">
           <div className="mb-12">
             <Outlet />
           </div>

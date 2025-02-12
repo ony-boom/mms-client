@@ -21,7 +21,9 @@ export function Player() {
   const { isPlaying, src, currentTrackId } = usePlayerStore();
   const audioRef = useRef<ElementRef<"audio">>(null);
   const { data } = useTracks({ id: currentTrackId });
-  const currentTrack = data?.[0];
+
+  // I don't what the first track if the current with the currentTrackId is not found
+  const currentTrack = data?.length === 1 ? data?.[0] : undefined;
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -59,7 +61,7 @@ export function Player() {
         <div className="mt-2 flex justify-center">
           <button
             className={cn(
-              "bg-foreground/20 hover:bg-foreground/30 py-1 w-16 cursor-pointer rounded transition-all hover:w-20",
+              "bg-foreground/20 hover:bg-foreground/30 w-16 cursor-pointer rounded py-1 transition-all hover:w-20",
               {
                 "w-24": playlistsExpanded,
               },

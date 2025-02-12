@@ -75,6 +75,7 @@
 }
 
 @layer base {
+
   html,
   body {
     overflow: hidden;
@@ -84,9 +85,11 @@
   body {
     @apply bg-background text-foreground;
     @apply !min-w-full;
+    -webkit-font-smoothing: antialised;
   }
 
-  [data-virtuoso-scroller="true"], [data-scroller="true"] {
+  [data-virtuoso-scroller="true"],
+  [data-scroller="true"] {
     @apply border-border;
 
     scrollbar-width: thin;

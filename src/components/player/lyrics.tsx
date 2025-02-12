@@ -9,7 +9,7 @@ import { motion } from "motion/react";
 export function Lyrics() {
   const { currentTrackId, position, isPlaying } = usePlayerStore();
   const { useTrackLyrics } = useApiClient();
-  const { data } = useTrackLyrics(currentTrackId!);
+  const { data, isLoading } = useTrackLyrics(currentTrackId!);
 
   const lyrics: LyricsResponse = useMemo(
     () => data || { isSync: false, text: "" },
@@ -31,17 +31,20 @@ export function Lyrics() {
       observerRef.current.disconnect();
     }
 
-    observerRef.current = new IntersectionObserver((entries) => {
-      const [entry] = entries;
-      if (!entry.isIntersecting && activeLyricRef.current && isPlaying) {
-        activeLyricRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
-    }, {
-      threshold: 0.1,
-    });
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (!entry.isIntersecting && activeLyricRef.current && isPlaying) {
+          activeLyricRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }
+      },
+      {
+        threshold: 0.9,
+      },
+    );
 
     if (activeLyricRef.current) {
       observerRef.current.observe(activeLyricRef.current);
@@ -53,6 +56,14 @@ export function Lyrics() {
       }
     };
   }, [position]);
+
+  if (isLoading) {
+    return (
+      <div className="w-full space-y-4 overflow-auto p-12 text-3xl font-black">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   if (!lyrics.text) {
     return (
