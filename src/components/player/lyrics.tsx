@@ -91,8 +91,8 @@ export function Lyrics() {
           return (
             <p
               ref={isActive ? activeLyricRef : null}
-              className={cn("text-foreground/55 transition-colors", {
-                "text-foreground": isActive,
+              className={cn("text-foreground/55 transition-all", {
+                "text-foreground text-4xl": isActive,
               })}
               key={lyric.timestamp}
             >
