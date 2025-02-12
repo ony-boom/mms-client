@@ -9,7 +9,7 @@ import { motion, AnimatePresence, type Variants } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { Playlists } from "@/components/player/playlists";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
-import { useEffect, useRef, useState, ElementRef } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { Lyrics } from "./lyrics";
 import { Track } from "@/api";
 import { cn } from "@/lib/utils";
@@ -48,7 +48,7 @@ export function Player() {
             className="with-blur fixed bottom-0 left-1/2 z-40 origin-bottom overflow-y-auto"
             style={{ transformOrigin: "bottom center" }}
           >
-            <Lyrics />
+            <Lyrics audioRef={audioRef} />
           </motion.div>
         )}
       </AnimatePresence>

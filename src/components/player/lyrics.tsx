@@ -2,11 +2,15 @@ import { Lrc } from "lrc-kit";
 import { cn } from "@/lib/utils";
 import { useApiClient } from "@/hooks";
 import { usePlayerStore } from "@/stores";
-import { useMemo, useRef, useEffect } from "react";
+import { useMemo, useRef, useEffect, RefObject } from "react";
 import { LyricsResponse } from "@/api";
 import { motion } from "motion/react";
 
-export function Lyrics() {
+export function Lyrics({
+  audioRef,
+}: {
+  audioRef: RefObject<HTMLAudioElement>;
+}) {
   const { currentTrackId, position, isPlaying } = usePlayerStore();
   const { useTrackLyrics } = useApiClient();
   const { data, isLoading } = useTrackLyrics(currentTrackId!);
@@ -73,6 +77,11 @@ export function Lyrics() {
     );
   }
 
+  const handleLyricsClick = (position: number) => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = position;
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -91,10 +100,11 @@ export function Lyrics() {
           return (
             <p
               ref={isActive ? activeLyricRef : null}
-              className={cn("text-foreground/55 transition-all", {
+              className={cn("text-foreground/55 transition-all cursor-pointer w-max", {
                 "text-foreground text-4xl": isActive,
               })}
               key={lyric.timestamp}
+              onClick={() => !isActive && handleLyricsClick(lyric.timestamp)}
             >
               {lyric.content}
             </p>
