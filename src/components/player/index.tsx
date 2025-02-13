@@ -44,7 +44,7 @@ export function Player() {
             animate="animate"
             exit="exit"
             data-scroller
-            className="with-blur fixed bottom-0 left-1/2 z-40 origin-bottom overflow-y-auto"
+            className="with-blur fixed bottom-0 left-1/2 z-50 origin-bottom overflow-y-auto"
             style={{ transformOrigin: "bottom center" }}
           >
             <Lyrics onClose={() => setOpenLyricsView(false)} />
