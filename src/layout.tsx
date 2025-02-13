@@ -28,9 +28,7 @@ function Layout() {
         {/* <AppSidebar /> */}
         <main className="w-full">
           <AudioProvider>
-            <div className="mb-12">
-              <Outlet />
-            </div>
+            <Outlet />
 
             <Player />
             <Toaster theme="light" />
