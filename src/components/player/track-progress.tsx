@@ -1,13 +1,15 @@
 import { memo } from "react";
 import { Track } from "@/api";
 import { usePlayerStore } from "@/stores";
-import { MouseEventHandler, RefObject } from "react";
+import { MouseEventHandler } from "react";
 import { Progress } from "@/components/ui/progress.tsx";
+import { useAudioRef } from "@/hooks/use-audio-ref";
 
 export const TrackProgress = memo(
-  ({ audioRef, currentTrack }: TrackProgressProps) => {
+  ({ currentTrack }: TrackProgressProps) => {
     const { position, duration } = usePlayerStore();
     const progress = (position * 100) / duration;
+    const audioRef = useAudioRef();
 
     const onProgressClick: MouseEventHandler<HTMLDivElement> = (event) => {
       if (!audioRef.current || !currentTrack) return;
@@ -31,5 +33,4 @@ export const TrackProgress = memo(
 
 export type TrackProgressProps = {
   currentTrack: Track | undefined;
-  audioRef: RefObject<HTMLAudioElement>;
 };

@@ -75,7 +75,6 @@
 }
 
 @layer base {
-
   html,
   body {
     overflow: hidden;
@@ -98,6 +97,10 @@
   }
 }
 
+::selection {
+  @apply bg-primary text-primary-foreground;
+}
+
 .with-blur {
-  @apply bg-background/80 shadow-xl backdrop-blur backdrop-brightness-50;
+  @apply bg-background/85 shadow-xl backdrop-blur backdrop-brightness-50;
 }

@@ -48,7 +48,7 @@ export function TracksGrid({ tracks, onTrackPlay }: TracksGridProps) {
       itemContent={(index, track) => (
         <TrackCard onTrackPlay={onTrackPlay} track={track} index={index} />
       )}
-      style={{ height: "calc(100vh - 114px)", willChange: "transform" }}
+      style={{ height: "100vh", willChange: "transform" }}
     />
   );
 }

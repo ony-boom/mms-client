@@ -4,8 +4,9 @@ import "@fontsource/manrope/index.css";
 import { Outlet } from "react-router";
 import { ApiContext } from "@/context/api-context";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar, AppTitle, Player } from "@/components";
+import { AppTitle, Player } from "@/components";
 import { Toaster } from "./components/ui/sonner";
+import { AudioProvider } from "./context/audio-ref-context";
 
 function Layout() {
   const [sidebarOpenState, setSidebarOpenState] = useState<boolean>(
@@ -24,14 +25,16 @@ function Layout() {
         open={sidebarOpenState}
         onOpenChange={handleSidebarOpenChange}
       >
-        <AppSidebar />
+        {/* <AppSidebar /> */}
         <main className="w-full">
-          <div className="mb-12">
-            <Outlet />
-          </div>
+          <AudioProvider>
+            <div className="mb-12">
+              <Outlet />
+            </div>
 
-          <Player />
-          <Toaster theme="light" />
+            <Player />
+            <Toaster theme="light" />
+          </AudioProvider>
         </main>
       </SidebarProvider>
     </ApiContext.Provider>

@@ -1,24 +1,24 @@
 import { Lrc } from "lrc-kit";
 import { cn } from "@/lib/utils";
-import { useApiClient } from "@/hooks";
-import { usePlayerStore } from "@/stores";
-import { useMemo, useRef, useEffect, RefObject } from "react";
-import { LyricsResponse } from "@/api";
 import { motion } from "motion/react";
+import { LyricsResponse } from "@/api";
+import { usePlayerStore } from "@/stores";
+import { useMemo, useRef, useEffect, memo } from "react";
+import { useApiClient, useAudioRef } from "@/hooks";
+import { Button } from "../ui/button";
+import { Minimize2 as Minimize } from "lucide-react";
 
-export function Lyrics({
-  audioRef,
-}: {
-  audioRef: RefObject<HTMLAudioElement>;
-}) {
+export const Lyrics = memo(({ onClose }: LyricsProps) => {
   const { currentTrackId, position, isPlaying } = usePlayerStore();
   const { useTrackLyrics } = useApiClient();
   const { data, isLoading } = useTrackLyrics(currentTrackId!);
+  const audioRef = useAudioRef();
 
   const lyrics: LyricsResponse = useMemo(
     () => data || { isSync: false, text: "" },
     [data],
   );
+
   const lrc = useMemo(() => {
     if (!lyrics.text) return null;
     if (lyrics.isSync) return Lrc.parse(lyrics.text);
@@ -27,7 +27,7 @@ export function Lyrics({
     return tryParse.lyrics.length ? tryParse : lyrics.text;
   }, [lyrics]);
 
-  const activeLyricRef = useRef<HTMLParagraphElement | null>(null);
+  const activeLyricRef = useRef<HTMLParagraphElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
@@ -61,62 +61,104 @@ export function Lyrics({
     };
   }, [position]);
 
-  if (isLoading) {
-    return (
-      <div className="w-full space-y-4 overflow-auto p-12 text-3xl font-black">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!lyrics.text) {
-    return (
-      <div className="w-full space-y-4 overflow-auto p-12 text-3xl font-black">
-        <p>Looks like we don't have the lyrics for this one</p>
-      </div>
-    );
-  }
-
   const handleLyricsClick = (position: number) => {
     if (!audioRef.current) return;
     audioRef.current.currentTime = position;
   };
 
+  if (isLoading) {
+    return (
+      <>
+        <div className="sticky top-2 flex justify-end px-12 py-2">
+          <Button onClick={onClose} variant="ghost" size={"icon"}>
+            <Minimize className="h-6 w-6" />
+          </Button>
+        </div>
+        <div className="flex h-full w-full place-items-center space-y-4 overflow-auto p-12 pt-0 text-xl font-black">
+          <p className="w-full text-center">
+            Fetching lyrics for you, just a moment...
+          </p>
+        </div>
+      </>
+    );
+  }
+
+  if (!lyrics.text) {
+    return (
+      <>
+        <div className="sticky top-2 flex justify-end px-12 py-2">
+          <Button onClick={onClose} variant="ghost" size={"icon"}>
+            <Minimize className="h-6 w-6" />
+          </Button>
+        </div>
+        <div className="flex h-full w-full place-items-center space-y-4 overflow-auto p-12 pt-0 text-xl font-black">
+          <p className="w-full text-center">
+            Looks like we don't have the lyrics for this one
+          </p>
+        </div>
+      </>
+    );
+  }
+
+  if (typeof lrc === "string") {
+    return (
+      <>
+        <div className="sticky top-2 flex justify-end px-12 py-2">
+          <Button onClick={onClose} variant="ghost" size={"icon"}>
+            <Minimize className="h-6 w-6" />
+          </Button>
+        </div>
+        <div className="space-y-2 p-12 pt-0 text-xl">
+          {lyrics.text.split("\n").map((line, index) => (
+            <p key={index}>{line}</p>
+          ))}
+        </div>
+      </>
+    );
+  }
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{
-        delay: 0.3,
-      }}
-      className="w-full space-y-4 overflow-auto p-12 text-3xl font-black"
-    >
-      {typeof lrc !== "string" ? (
-        lrc!.lyrics.map((lyric, index) => {
+    <>
+      <div className="sticky top-2 flex justify-end px-12 py-2">
+        <Button onClick={onClose} variant="ghost" size={"icon"}>
+          <Minimize className="h-6 w-6" />
+        </Button>
+      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          delay: 0.3,
+        }}
+        className="w-full space-y-4 overflow-auto p-12 pt-0 text-3xl font-black"
+      >
+        {lrc!.lyrics.map((lyric, index) => {
           const nextTimestamp = lrc!.lyrics[index + 1]?.timestamp ?? Infinity;
           const isActive =
             position >= lyric.timestamp && position < nextTimestamp;
 
           return (
             <p
+              title={isActive ? "" : "Click to seek to this position"}
               ref={isActive ? activeLyricRef : null}
-              className={cn("text-foreground/55 transition-all cursor-pointer w-max", {
-                "text-foreground text-4xl": isActive,
-              })}
+              className={cn(
+                "text-foreground/55 w-max max-w-6xl cursor-pointer leading-10 transition-all",
+                {
+                  "text-foreground text-4xl": isActive,
+                },
+              )}
               key={lyric.timestamp}
               onClick={() => !isActive && handleLyricsClick(lyric.timestamp)}
             >
               {lyric.content}
             </p>
           );
-        })
-      ) : (
-        <div className="space-y-2 text-xl">
-          {lyrics.text.split("\n").map((line, index) => (
-            <p key={index}>{line}</p>
-          ))}
-        </div>
-      )}
-    </motion.div>
+        })}
+      </motion.div>
+    </>
   );
-}
+});
+
+export type LyricsProps = {
+  onClose: () => void;
+};

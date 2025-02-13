@@ -1,5 +1,5 @@
 import { Audio } from "./audio";
-import { useApiClient } from "@/hooks";
+import { useApiClient, useAudioRef } from "@/hooks";
 import { usePlayerStore } from "@/stores";
 import { Controller } from "./controller";
 import { TrackProgress } from "./track-progress";
@@ -9,7 +9,7 @@ import { motion, AnimatePresence, type Variants } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { Playlists } from "@/components/player/playlists";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Lyrics } from "./lyrics";
 import { Track } from "@/api";
 import { cn } from "@/lib/utils";
@@ -19,10 +19,9 @@ export function Player() {
   const [openLyricsView, setOpenLyricsView] = useState(false);
   const { useTracks } = useApiClient();
   const { isPlaying, src, currentTrackId } = usePlayerStore();
-  const audioRef = useRef<ElementRef<"audio">>(null);
+  const audioRef = useAudioRef();
   const { data } = useTracks({ id: currentTrackId });
 
-  // I don't what the first track if the current with the currentTrackId is not found
   const currentTrack = data?.length === 1 ? data?.[0] : undefined;
 
   useEffect(() => {
@@ -48,7 +47,7 @@ export function Player() {
             className="with-blur fixed bottom-0 left-1/2 z-40 origin-bottom overflow-y-auto"
             style={{ transformOrigin: "bottom center" }}
           >
-            <Lyrics audioRef={audioRef} />
+            <Lyrics onClose={() => setOpenLyricsView(false)} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -77,7 +76,7 @@ export function Player() {
           />
           <Controller shouldPlay={!currentTrack} />
         </div>
-        <TrackProgress audioRef={audioRef} currentTrack={currentTrack} />
+        <TrackProgress currentTrack={currentTrack} />
         <AnimatePresence>
           {playlistsExpanded && (
             <motion.div
