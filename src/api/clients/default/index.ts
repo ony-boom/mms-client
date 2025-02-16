@@ -5,7 +5,13 @@ import { LoadedTracks, LyricsResponse, Track } from "@/api";
 import { CACHE_KEY } from "@/api/constant.ts";
 import { axiosClient, BASE_URL } from "./axios-client";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { GET_LYRICS, GET_TRACKS, LOAD_TRACK, TRACK_LOAD } from "./queries";
+import {
+  FAVORITE_TRACK,
+  GET_LYRICS,
+  GET_TRACKS,
+  LOAD_TRACK,
+  TRACK_LOAD,
+} from "./queries";
 
 export const defaultApi: Api = {
   useTracks: (where, sortBy) => {
@@ -94,6 +100,21 @@ export const defaultApi: Api = {
         });
 
         return responseData.data.lyrics;
+      },
+    });
+  },
+
+  useFavoriteTrack: () => {
+    return useMutation({
+      mutationFn: async ({ trackId, value }) => {
+        const { data: responseData } = await axiosClient.post<{
+          data: { favoriteTrack: Partial<Track> };
+        }>("/graphql", {
+          query: FAVORITE_TRACK,
+          variables: { trackId, value: value ?? true },
+        });
+
+        return responseData.data.favoriteTrack;
       },
     });
   },

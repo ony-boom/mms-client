@@ -4,6 +4,7 @@ export const GET_TRACKS = /*GraphQL*/ `
             id
             title
             path
+            isFavorite
             artists {
                 id
                 name

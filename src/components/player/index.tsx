@@ -25,13 +25,16 @@ export function Player() {
   const currentTrack = data?.length === 1 ? data?.[0] : undefined;
 
   useEffect(() => {
-    if (!audioRef.current) return;
-    if (isPlaying && src) {
-      audioRef.current.play();
-    } else {
-      audioRef.current.pause();
-    }
-  }, [isPlaying, src]);
+    const audioElement = audioRef.current;
+    if (!audioElement) return;
+    (async () => {
+      if (isPlaying && src) {
+        await audioElement.play();
+      } else {
+        audioElement.pause();
+      }
+    })();
+  }, [audioRef, isPlaying, src]);
 
   return (
     <>
@@ -53,44 +56,47 @@ export function Player() {
       </AnimatePresence>
 
       <Audio currentTrack={currentTrack} ref={audioRef} />
-      <div
-        id="player"
-        className="with-blur fixed bottom-4 left-[50%] z-50 flex min-w-xl translate-x-[-50%] flex-col overflow-hidden rounded"
-      >
-        <div className="mt-2 flex justify-center">
-          <button
-            className={cn(
-              "bg-foreground/20 hover:bg-foreground/30 w-16 cursor-pointer rounded py-1 transition-all hover:w-20",
-              {
-                "w-24": playlistsExpanded,
-              },
+
+      <div className="fixed bottom-4 left-[50%] z-50 translate-x-[-50%]">
+        <div
+          id="player"
+          className="with-blur flex min-w-xl flex-col overflow-hidden rounded"
+        >
+          <div className="mt-2 flex justify-center">
+            <button
+              className={cn(
+                "bg-foreground/20 hover:bg-foreground/30 w-16 cursor-pointer rounded py-1 transition-all hover:w-20",
+                {
+                  "w-24": playlistsExpanded,
+                },
+              )}
+              onClick={() => setPlaylistsExpanded((prev) => !prev)}
+            />
+          </div>
+          <div className="relative flex items-center justify-between gap-16 px-3 pt-1 pb-4">
+            <TrackInfo
+              currentTrack={currentTrack!}
+              openLyricsView={openLyricsView}
+              onFullScreenToggle={() => setOpenLyricsView((prev) => !prev)}
+            />
+            <Controller shouldPlay={!currentTrack} />
+          </div>
+          <TrackProgress currentTrack={currentTrack} />
+          <AnimatePresence>
+            {playlistsExpanded && (
+              <motion.div
+                key="playlists"
+                variants={playlistVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                layout="position"
+              >
+                <Playlists />
+              </motion.div>
             )}
-            onClick={() => setPlaylistsExpanded((prev) => !prev)}
-          />
+          </AnimatePresence>
         </div>
-        <div className="relative flex items-center justify-between gap-16 px-3 pt-1 pb-4">
-          <TrackInfo
-            currentTrack={currentTrack!}
-            openLyricsView={openLyricsView}
-            onFullScreenToggle={() => setOpenLyricsView((prev) => !prev)}
-          />
-          <Controller shouldPlay={!currentTrack} />
-        </div>
-        <TrackProgress currentTrack={currentTrack} />
-        <AnimatePresence>
-          {playlistsExpanded && (
-            <motion.div
-              key="playlists"
-              variants={playlistVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              layout="position"
-            >
-              <Playlists />
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </>
   );

@@ -1,5 +1,4 @@
 import {
-  Heart,
   Pause,
   Play,
   Shuffle,
@@ -8,6 +7,7 @@ import {
 } from "lucide-react";
 import { usePlayerStore } from "@/stores";
 import { Button } from "@/components/ui/button";
+import { FavouriteButton } from "@/components";
 
 export function Controller({ shouldPlay }: ControllerProps) {
   const {
@@ -29,9 +29,7 @@ export function Controller({ shouldPlay }: ControllerProps) {
 
   return (
     <div aria-labelledby="controller" className="flex items-center gap-2">
-      <Button disabled size="icon" variant="ghost">
-        <Heart />
-      </Button>
+      <FavouriteButton variant={"ghost"} />
       <Button
         onClick={handleShuffle}
         className={isShuffle ? "text-foreground" : "text-foreground/50"}
