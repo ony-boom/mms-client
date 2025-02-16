@@ -7,6 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppTitle, Player } from "@/components";
 import { Toaster } from "./components/ui/sonner";
 import { AudioProvider } from "./context/audio-ref-context";
+import { ThemeProvider } from "./context/theme";
 
 function Layout() {
   const [sidebarOpenState, setSidebarOpenState] = useState<boolean>(
@@ -20,21 +21,23 @@ function Layout() {
 
   return (
     <ApiContext.Provider value={{ apiClientName: "default" }}>
-      <AppTitle />
-      <SidebarProvider
-        open={sidebarOpenState}
-        onOpenChange={handleSidebarOpenChange}
-      >
-        {/* <AppSidebar /> */}
-        <main className="w-full">
-          <AudioProvider>
-            <Outlet />
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <AppTitle />
+        <SidebarProvider
+          open={sidebarOpenState}
+          onOpenChange={handleSidebarOpenChange}
+        >
+          {/* <AppSidebar /> */}
+          <main className="w-full">
+            <AudioProvider>
+              <Outlet />
 
-            <Player />
-            <Toaster theme="light" />
-          </AudioProvider>
-        </main>
-      </SidebarProvider>
+              <Player />
+              <Toaster theme="light" />
+            </AudioProvider>
+          </main>
+        </SidebarProvider>
+      </ThemeProvider>
     </ApiContext.Provider>
   );
 }

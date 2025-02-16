@@ -1,4 +1,5 @@
 export * from "./use-mobile";
+export * from "./use-theme";
 export * from "./use-debounce";
 export * from "./use-playlist";
 export * from "./use-audio-ref";

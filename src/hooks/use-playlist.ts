@@ -1,18 +1,16 @@
-import { usePlayerStore } from "@/stores";
-import { useCallback, useMemo, useState } from "react";
-import { useApiClient } from "@/hooks/use-api-client.ts";
-import { GetTrackSortByInput, GetTrackWhereInput } from "@/api/Api.ts";
+import { useFilterStore, usePlayerStore } from "@/stores";
+import { useApiClient } from "@/hooks/use-api-client";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 export const usePlaylist = () => {
   const { setPlaylists } = usePlayerStore();
-  const [filter, setFilter] = useState<{
-    query: GetTrackWhereInput;
-    sort: GetTrackSortByInput;
-  }>();
+  const {sort, query} = useFilterStore();
+
+  const isPlaylistInitialized = useRef(false);
 
   const { useTracks, getTrackAudioSrc } = useApiClient();
 
-  const tracksQuery = useTracks(filter?.query, filter?.sort);
+  const tracksQuery = useTracks(query, sort);
 
   const playlist = useMemo(
     () =>
@@ -29,8 +27,14 @@ export const usePlaylist = () => {
     }
   }, [playlist, setPlaylists]);
 
+  useEffect(() => {
+    if (tracksQuery.data && !isPlaylistInitialized.current) {
+      resetPlaylist();
+      isPlaylistInitialized.current = tracksQuery.data.length > 0;
+    }
+  }, [resetPlaylist, tracksQuery.data]);
+
   return {
-    setFilter,
     playlist,
     tracksQuery,
     resetPlaylist,

@@ -204,7 +204,6 @@ export const usePlayerStore = create<PlayerState>()(
         return {
           src: state.src,
           position: state.position,
-          isPlaying: state.isPlaying,
           currentTrackId: state.currentTrackId,
           isShuffle: state.isShuffle,
           shuffleOrder: state.shuffleOrder,
@@ -212,7 +211,7 @@ export const usePlayerStore = create<PlayerState>()(
           duration: state.duration,
           playlistOrder: state.playlistOrder,
           playingIndex: state.playingIndex,
-        };
+        } as PlayerState;
       },
       storage: createDebouncedStorage(),
     },

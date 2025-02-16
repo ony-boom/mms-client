@@ -16,6 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { SortOrder, TrackSortField } from "@/api";
+import { GetTrackSortByInput } from "@/api/Api";
 
 const sortFields = [
   {
@@ -36,7 +37,7 @@ const sortFields = [
   },
 ];
 
-export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
+export function Sort({ value, onValueChange }: TrackMenuSortProps) {
   const [open, setOpen] = React.useState(false);
 
   const handleSortDirectionChange: MouseEventHandler<HTMLButtonElement> = (
@@ -45,7 +46,7 @@ export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
     e.stopPropagation();
     onValueChange(
       value.field ?? TrackSortField.NONE,
-      value.direction === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+      value.order === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
     );
   };
 
@@ -71,11 +72,11 @@ export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
           <Button
             onClick={handleSortDirectionChange}
             size={"sm"}
-            title={value.direction === SortOrder.ASC ? "Sort Desc" : "Sort Asc"}
+            title={value.order === SortOrder.ASC ? "Sort Desc" : "Sort Asc"}
             disabled={value?.field === TrackSortField.NONE}
             className="bg-transparent"
           >
-            {value.direction === SortOrder.ASC ? <SortAsc /> : <SortDesc />}
+            {value.order === SortOrder.ASC ? <SortAsc /> : <SortDesc />}
           </Button>
         </div>
       </PopoverTrigger>
@@ -93,7 +94,7 @@ export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
                       currentValue === value.field
                         ? TrackSortField.NONE
                         : (currentValue as TrackSortField);
-                    onValueChange(realValue as TrackSortField, value.direction);
+                    onValueChange(realValue as TrackSortField, value.order);
                     setOpen(false);
                   }}
                 >
@@ -117,9 +118,6 @@ export function TrackMenuSort({ value, onValueChange }: TrackMenuSortProps) {
 }
 
 export type TrackMenuSortProps = {
-  value: {
-    field: TrackSortField;
-    direction: SortOrder;
-  };
+  value: GetTrackSortByInput;
   onValueChange: (value: TrackSortField, direction: SortOrder) => void;
 };

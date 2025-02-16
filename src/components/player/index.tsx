@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { Lyrics } from "./lyrics";
 import { Track } from "@/api";
 import { cn } from "@/lib/utils";
+import { Extra } from "./extra";
 
 export function Player() {
   const [playlistsExpanded, setPlaylistsExpanded] = useState(false);
@@ -57,10 +58,11 @@ export function Player() {
 
       <Audio currentTrack={currentTrack} ref={audioRef} />
 
-      <div className="fixed bottom-4 left-[50%] z-50 translate-x-[-50%]">
+      <div className="fixed bottom-4 left-[50%] z-50 translate-x-[-50%] space-y-2">
+        <Extra />
         <div
           id="player"
-          className="with-blur flex min-w-xl flex-col overflow-hidden rounded"
+          className="with-blur flex min-w-xl flex-col overflow-hidden rounded border border-foreground/10"
         >
           <div className="mt-2 flex justify-center">
             <button
