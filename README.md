@@ -2,8 +2,9 @@
 
 A web client for my music server (should work with any music server though)
 
-![Screenshot from 2025-02-07 15-29-33](https://github.com/user-attachments/assets/7cb6b8f4-c915-4b2f-9206-6d2c35a1a17c)
-![Screenshot from 2025-02-11 07-33-45](https://github.com/user-attachments/assets/d8d363a9-5f89-4f05-8ee9-532e38d54966)
+![Demo 1](/docs/images/screenshot1.png)
+![Demo 2](/docs/images/screenshot2.png)
+![Demo 3](/docs/images/screenshot3.png)
 
 
 > [!NOTE]  
@@ -13,5 +14,6 @@ A web client for my music server (should work with any music server though)
 ### TODO
 
 - [x] use virtualized list for the song list
-- [ ] Fix ui contrast
+- [x] Docs
+- [ ] Improve the UI
 - [ ] Performance
