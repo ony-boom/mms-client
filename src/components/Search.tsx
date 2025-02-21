@@ -43,7 +43,7 @@ export function Search() {
           exit={{ opacity: 0 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-primary/30 fixed top-0 left-0 z-[60] grid h-full w-full justify-center"
+          className="bg-background/80 fixed top-0 left-0 z-[60] grid h-full w-full justify-center"
           onClick={() => setOpenSearchComponent(false)}
         >
           <form onSubmit={handleSubmit}>

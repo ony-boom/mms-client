@@ -62,12 +62,12 @@ export function Player() {
         <Extra />
         <div
           id="player"
-          className="with-blur flex min-w-xl flex-col overflow-hidden rounded border border-foreground/10"
+          className="with-blur flex min-w-xl flex-col overflow-hidden rounded-md border border-foreground/10"
         >
           <div className="mt-2 flex justify-center">
             <button
               className={cn(
-                "bg-foreground/20 hover:bg-foreground/30 w-16 cursor-pointer rounded py-1 transition-all hover:w-20",
+                "bg-foreground/10 hover:bg-foreground/20 w-16 cursor-pointer rounded py-1 transition-all hover:w-20",
                 {
                   "w-24": playlistsExpanded,
                 },
@@ -124,7 +124,7 @@ const TrackInfo = ({
       <>
         <div className="group relative">
           <TrackCover
-            className="w-24"
+            className="w-24 rounded-md"
             trackId={currentTrack.id}
             trackTitle={currentTrack.title}
           />
