@@ -80,7 +80,7 @@ export function Sort({ value, onValueChange }: TrackMenuSortProps) {
           </Button>
         </div>
       </PopoverTrigger>
-      <PopoverContent className="mt-2 w-max p-0">
+      <PopoverContent className="mt-2 w-max p-0 border-none">
         <Command>
           <CommandList>
             <CommandGroup>

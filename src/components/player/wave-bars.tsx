@@ -28,7 +28,7 @@ export function WaveBars() {
       {[0, 1, 2].map((index) => (
         <motion.div
           key={index}
-          className="bg-foreground w-[2px]"
+          className="bg-primary w-[2px]"
           animate={controls}
           custom={index} // Pass the index to customize the animation for each bar
         />

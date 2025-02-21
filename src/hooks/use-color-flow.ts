@@ -1,23 +1,25 @@
-import { useApiClient } from "@/hooks/use-api-client.ts";
-import { useEffect, useState } from "react";
 import { usePlayerStore } from "@/stores";
-import mdc from "material-dynamic-colors";
-
-type MaterialDynamicColors = Awaited<ReturnType<typeof mdc>>
+import { useEffect, useState } from "react";
+import { useApiClient } from "@/hooks/use-api-client.ts";
+import { themeFromImage, type Theme } from "@material/material-color-utilities";
 
 export const useColorFlow = () => {
   const { currentTrackId } = usePlayerStore();
   const { getTrackCoverSrc } = useApiClient();
-  const [color, setColor] = useState<MaterialDynamicColors| null>(null);
+  const [color, setColor] = useState<Theme | null>(null);
 
   useEffect(() => {
     if (!currentTrackId) return;
     const src = getTrackCoverSrc(currentTrackId);
     (async () => {
-      const colors = await mdc(src);
-      setColor(colors);
+      const imageEl = new Image();
+      imageEl.crossOrigin = "anonymous";
+      imageEl.src = src;
+      imageEl.onload = async () => {
+        const colors = await themeFromImage(imageEl);
+        setColor(colors);
+      };
     })();
   }, [currentTrackId]);
-
   return color;
 };

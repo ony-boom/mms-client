@@ -22,9 +22,9 @@ export function TrackContextMenu({ track, children }: TrackContextMenuProps) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="with-blur w-36 space-y-1 p-0 transition-all">
+      <ContextMenuContent className="with-blur border-none w-36 space-y-1 p-0 transition-all">
         <ContextMenuItem
-          className="data-[highlighted]:bg-accent/60 w-full"
+          className="w-full"
           onClick={onPlayNextClick}
           disabled={!player.currentTrackId}
         >
@@ -32,12 +32,12 @@ export function TrackContextMenu({ track, children }: TrackContextMenuProps) {
           <Redo2 size={16} className="ml-auto" />
         </ContextMenuItem>
 
-        <ContextMenuItem className="data-[highlighted]:bg-accent/60 w-full">
+        <ContextMenuItem className="w-full">
           Go to artist
           <CircleUserRound size={16} className="ml-auto" />
         </ContextMenuItem>
 
-        <ContextMenuItem className="data-[highlighted]:bg-accent/60 w-full">
+        <ContextMenuItem className="w-full">
           Go to album
           <Disc size={16} className="ml-auto" />
         </ContextMenuItem>

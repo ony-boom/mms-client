@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Plus, Search } from "lucide-react";
 import { SortOrder, TrackSortField } from "@/api";
 import { useFilterStore, usePlayerStore } from "@/stores";
-// import { ModeToggle } from "../mode-toggle";
+import { ModeToggle } from "../mode-toggle";
 
 export function Extra() {
   const { resetPlaylist } = usePlaylist();
@@ -59,7 +59,7 @@ export function Extra() {
               <Search />
             </Button>
 
-            {/*<ModeToggle />*/}
+            <ModeToggle />
           </motion.div>
         )}
       </AnimatePresence>
