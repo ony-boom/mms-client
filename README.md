@@ -1,19 +1,28 @@
-# A Music player client
+# A Music Player Client
 
-A web client for my music server (should work with any music server though)
+A web client for My Music Server (should work with any music server though).
 
-![Demo 1](/docs/images/screenshot1.png)
-![Demo 2](/docs/images/screenshot2.png)
-![Demo 3](/docs/images/screenshot3.png)
+## Description
 
+This web client is designed to work with My Music Server, a simple music server application built with TypeScript,
+React, and SQL. It allows users to manage and play their music tracks efficiently.
 
-> [!NOTE]  
-> This is a WIP.
+## Installation
 
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/ony-boom/mms-client.git
+    cd mms-client
+    ```
 
-### TODO
+2. Install dependencies:
+    ```sh
+    pnpm install
+    ```
 
-- [x] use virtualized list for the song list
-- [ ] Docs
-- [ ] Improve the UI
-- [ ] Performance
+## Development
+
+To start the development server, run:
+
+```sh
+pnpm run dev
