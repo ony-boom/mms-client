@@ -51,23 +51,32 @@ export function Extra() {
                 sort ?? { order: SortOrder.ASC, field: TrackSortField.NONE }
               }
             />
-            <Button onClick={handleShuffle}>
+            <Button variant={"secondary"} onClick={handleShuffle}>
               Shuffle
               <Shuffle />
             </Button>
 
-            <Button onClick={handleSearchClick} size={"icon"}>
+            <Button
+              onClick={handleSearchClick}
+              variant={"secondary"}
+              size={"icon"}
+            >
               <Search />
             </Button>
 
             <ModeToggle />
 
-            <TrackLoadToast />
+            <TrackLoadToast variant={"secondary"} />
           </motion.div>
         )}
       </AnimatePresence>
 
-      <Button size="icon" className="z-10" onClick={handleExtraClick}>
+      <Button
+        variant={"secondary"}
+        size="icon"
+        className="z-10"
+        onClick={handleExtraClick}
+      >
         <motion.span
           initial={{ rotate: 0 }}
           animate={{ rotate: openExtra ? 45 : 0 }}
