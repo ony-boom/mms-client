@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useMemo } from "react";
 import { useColorFlow, useTheme } from "@/hooks";
 import { hexFromArgb, rgbaFromArgb } from "@material/material-color-utilities";
 
@@ -19,7 +19,15 @@ function setCssVar(
 export function WithColorFlow({ children }: { children: ReactNode }) {
   const colorFlow = useColorFlow();
   const { theme } = useTheme();
-  const currentTheme = theme === "dark" ? "dark" : "light";
+
+  const currentTheme: "dark" | "light" = useMemo(() => {
+    if (theme === "system") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+    return theme;
+  }, [theme]);
 
   useEffect(() => {
     if (!colorFlow) return;
