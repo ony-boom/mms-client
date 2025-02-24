@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from "react";
 import { useColorFlow, useTheme } from "@/hooks";
-import { hexFromArgb } from "@material/material-color-utilities";
+import { hexFromArgb, rgbaFromArgb } from "@material/material-color-utilities";
 
 function setCssVar(vars: string, value: string): void;
 function setCssVar(vars: Record<string, string>): void;
@@ -24,19 +24,21 @@ export function WithColorFlow({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!colorFlow) return;
     const color = colorFlow.schemes[currentTheme];
+    const acccentRgba = rgbaFromArgb(color.primary);
+    acccentRgba.a = 0.1;
 
     setCssVar({
       "--color-background": hexFromArgb(color.background),
       "--color-foreground": hexFromArgb(color.onBackground),
       "--color-primary": hexFromArgb(color.primary),
-      "--color-accent": hexFromArgb(color.tertiary),
       "--color-destructive": hexFromArgb(color.error),
-      "--color-accent-foreground": hexFromArgb(color.onTertiary),
       "--color-popover": hexFromArgb(color.background),
+      "--color-accent-foreground": hexFromArgb(color.onBackground),
       "--color-popover-foreground": hexFromArgb(color.onBackground),
       "--color-secondary": hexFromArgb(color.secondaryContainer),
       "--color-primary-foreground": hexFromArgb(color.onPrimary),
       "--color-secondary-foreground": hexFromArgb(color.onSecondaryContainer),
+      "--color-accent": `rgba(${acccentRgba.r}, ${acccentRgba.g}, ${acccentRgba.b}, ${acccentRgba.a})`,
     });
   }, [colorFlow, currentTheme]);
 
