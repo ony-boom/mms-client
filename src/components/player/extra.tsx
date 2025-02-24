@@ -8,7 +8,7 @@ import { Plus, Search } from "lucide-react";
 import { SortOrder, TrackSortField } from "@/api";
 import { useFilterStore, usePlayerStore } from "@/stores";
 import { ModeToggle } from "../mode-toggle";
-import { TrackLoadToast } from "../track-load-toast";
+import { TrackLoadToast } from "@/components";
 
 export function Extra() {
   const { resetPlaylist } = usePlaylist();

@@ -1,6 +1,7 @@
 import { create } from "zustand/react";
 import { persist } from "zustand/middleware";
 import { GetTrackSortByInput, GetTrackWhereInput } from "@/api/Api.ts";
+import { TrackSortField } from "@/api";
 
 interface FilterStore {
   query?: GetTrackWhereInput;
@@ -22,7 +23,13 @@ export const useFilterStore = create<FilterStore>()(
       setOpenSearchComponent: (open) => set({ openSearchComponent: open }),
       query: undefined,
       sort: undefined,
-      setSort: (sort) => set({ sort }),
+      setSort: (sort) => {
+        if (sort?.field === TrackSortField.NONE) {
+          set({ sort: undefined });
+          return;
+        }
+        set({ sort });
+      },
       setQuery: (query) => set({ query }),
       setFilter: (filter) => set(filter),
     }),

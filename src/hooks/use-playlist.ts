@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 
 export const usePlaylist = () => {
   const { setPlaylists } = usePlayerStore();
-  const {sort, query} = useFilterStore();
+  const { sort, query } = useFilterStore();
 
   const isPlaylistInitialized = useRef(false);
 
