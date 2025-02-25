@@ -46,12 +46,20 @@ export const rest: Api = {
         const newUrl = new URL(`${BASE_URL}/api/tracks`);
 
         if (where) {
-          if (where.id) {
-            newUrl.searchParams.append("query", where.id);
-            newUrl.searchParams.append("field", "id");
-          } else if (where.title) {
-            newUrl.searchParams.append("field", "*");
-            newUrl.searchParams.append("query", where.title ?? "");
+          const fields: Record<string, string> = {
+            id: "id",
+            title: "*",
+            albumTitle: "album",
+            artistName: "artist",
+          };
+
+          for (const key of Object.keys(fields)) {
+            const typedKey = key as keyof typeof where;
+            if (where[typedKey]) {
+              newUrl.searchParams.append("field", fields[typedKey]);
+              newUrl.searchParams.append("query", where[typedKey] ?? "");
+              break;
+            }
           }
         }
 

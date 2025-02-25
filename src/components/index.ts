@@ -1,5 +1,6 @@
+export * from "./extra";
 export * from "./player";
-export * from "./search";
+export * from "./global-search";
 export * from "./app-title";
 export * from "./page-title";
 export * from "./favourite-button";

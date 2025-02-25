@@ -1,19 +1,18 @@
+import { Track } from "@/api";
 import { Audio } from "./audio";
-import { useApiClient, useAudioRef } from "@/hooks";
+import { cn } from "@/lib/utils";
+import { Lyrics } from "./lyrics";
 import { usePlayerStore } from "@/stores";
 import { Controller } from "./controller";
+import { useEffect, useState } from "react";
 import { TrackProgress } from "./track-progress";
-import { Button } from "@/components/ui/button.tsx";
 import { MessageSquareQuote } from "lucide-react";
-import { motion, AnimatePresence, type Variants } from "motion/react";
+import { Button } from "@/components/ui/button.tsx";
+import { useApiClient, useAudioRef } from "@/hooks";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { Playlists } from "@/components/player/playlists";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
-import { useEffect, useState } from "react";
-import { Lyrics } from "./lyrics";
-import { Track } from "@/api";
-import { cn } from "@/lib/utils";
-import { Extra } from "./extra";
+import { motion, AnimatePresence, type Variants } from "motion/react";
 
 export function Player() {
   const [playlistsExpanded, setPlaylistsExpanded] = useState(false);
@@ -58,11 +57,10 @@ export function Player() {
 
       <Audio currentTrack={currentTrack} ref={audioRef} />
 
-      <div className="fixed bottom-4 left-[50%] z-50 translate-x-[-50%] space-y-2">
-        <Extra />
+      <div className="fixed bottom-2 left-[50%] z-50 translate-x-[-50%] space-y-2">
         <div
           id="player"
-          className="with-blur flex min-w-xl flex-col overflow-hidden rounded-md border border-foreground/10"
+          className="with-blur border-foreground/10 flex w-auto flex-col overflow-hidden rounded-md border"
         >
           <div className="mt-2 flex justify-center">
             <button
@@ -112,51 +110,64 @@ const TrackInfo = ({
   currentTrack: Track;
   openLyricsView: boolean;
   onFullScreenToggle: () => void;
-}) => (
-  <motion.div
-    aria-labelledby="track info"
-    className="flex shrink-0 items-end gap-4"
-    variants={trackInfoVariants}
-    initial="initial"
-    animate="animate"
-  >
-    {currentTrack ? (
-      <>
-        <div className="group relative">
-          <TrackCover
-            className="w-24 rounded-md"
-            trackId={currentTrack.id}
-            trackTitle={currentTrack.title}
-          />
-          <Button
-            size="icon"
-            title={openLyricsView ? "Hide lyrics" : "Show lyrics"}
-            onClick={onFullScreenToggle}
-            className="absolute right-0 bottom-0 opacity-0 transition-opacity group-hover:opacity-100"
-          >
-            {<MessageSquareQuote />}
-          </Button>
-        </div>
-        <div className="max-w-[148px] text-nowrap">
-          <p className="overflow-hidden font-bold text-ellipsis">
-            {currentTrack.title}
-          </p>
-          <small className="overflow-hidden text-ellipsis">
-            {currentTrack.artists.map((artist) => artist.name).join(", ")}
-          </small>
-        </div>
-      </>
-    ) : (
-      <motion.div className="flex items-end gap-4" variants={skeletonVariants}>
-        <div className="bg-muted aspect-square w-24 rounded-xl" />
-        <div className="max-w-[148px]">
-          <Skeleton className="w-full" />
-          <Skeleton className="w-full" />
-        </div>
-      </motion.div>
-    )}
-  </motion.div>
-);
+}) => {
+  const artists = currentTrack?.artists.map((artist) => artist.name).join(", ");
+  return (
+    <motion.div
+      aria-labelledby="track info"
+      className="flex shrink-0 items-end gap-4"
+      variants={trackInfoVariants}
+      initial="initial"
+      animate="animate"
+    >
+      {currentTrack ? (
+        <>
+          <div className="group relative">
+            <TrackCover
+              className="w-18 rounded-md"
+              trackId={currentTrack.id}
+              trackTitle={currentTrack.title}
+            />
+            <Button
+              size="icon"
+              title={openLyricsView ? "Hide lyrics" : "Show lyrics"}
+              onClick={onFullScreenToggle}
+              className="absolute right-0 bottom-0 opacity-0 transition-opacity group-hover:opacity-100"
+            >
+              {<MessageSquareQuote />}
+            </Button>
+          </div>
+          <div className="w-[148px] space-y-1 text-nowrap">
+            <p
+              title={currentTrack.title}
+              className="overflow-hidden font-bold text-ellipsis"
+            >
+              {currentTrack.title}
+            </p>
+
+            <p
+              title={artists}
+              className="overflow-hidden text-xs text-ellipsis"
+            >
+              {artists}
+            </p>
+          </div>
+        </>
+      ) : (
+        <motion.div
+          className="flex items-end gap-4"
+          variants={skeletonVariants}
+        >
+          <div className="bg-muted aspect-square w-18 rounded-xl" />
+          <div className="w-[148px]">
+            <Skeleton className="w-full" />
+            <Skeleton className="w-full" />
+          </div>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+};
 
 const lyricsVariants: Variants = {
   initial: {

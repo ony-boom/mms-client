@@ -33,7 +33,7 @@ const sortFields = [
   },
   {
     value: TrackSortField.NONE,
-    label: "None",
+    label: "Default",
   },
 ];
 
@@ -52,18 +52,18 @@ export function Sort({ value, onValueChange }: TrackMenuSortProps) {
 
   const getSortFieldLabel = (field: TrackSortField) => {
     const sortField = sortFields.find((f) => f.value === field);
-    if (!sortField || sortField.value === TrackSortField.NONE) return "Sort by";
+    if (!sortField || sortField.value === TrackSortField.NONE) return "Default";
     return sortField.label;
   };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div className="bg-secondary text-foreground group hover:bg-secondary/80 flex items-center gap-1 overflow-hidden rounded-md backdrop-blur-md">
+        <div className="text-foreground group hover:bg-accent flex items-center gap-1 overflow-hidden rounded-md backdrop-blur-md">
           <Button
             size={"sm"}
             role="combobox"
-            variant={"secondary"}
+            variant={"ghost"}
             aria-expanded={open}
             className="justify-between bg-transparent"
           >
@@ -72,7 +72,7 @@ export function Sort({ value, onValueChange }: TrackMenuSortProps) {
 
           <Button
             size={"sm"}
-            variant={"secondary"}
+            variant={"ghost"}
             className="bg-transparent"
             onClick={handleSortDirectionChange}
             title={value.order === SortOrder.ASC ? "Sort Desc" : "Sort Asc"}

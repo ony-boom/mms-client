@@ -47,6 +47,7 @@ export function WithColorFlow({ children }: { children: ReactNode }) {
       "--color-primary-foreground": hexFromArgb(color.onPrimary),
       "--color-secondary-foreground": hexFromArgb(color.onSecondaryContainer),
       "--color-accent": `rgba(${acccentRgba.r}, ${acccentRgba.g}, ${acccentRgba.b}, ${acccentRgba.a})`,
+      "--color-border": hexFromArgb(color.secondary),
     });
   }, [colorFlow, currentTheme]);
 

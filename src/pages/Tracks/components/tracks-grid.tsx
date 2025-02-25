@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import { TrackCard } from "./track-card";
 import { VirtuosoGrid, type GridComponents } from "react-virtuoso";
 
-const ITEM_SIZE = 256;
+const ITEM_SIZE = 232;
 
 const components: GridComponents = {
   List: forwardRef(({ style, children, ...props }, ref) => {

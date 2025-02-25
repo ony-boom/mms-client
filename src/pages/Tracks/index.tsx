@@ -3,7 +3,7 @@ import { Loading } from "./components/loading";
 import { usePlaylist } from "@/hooks";
 import { TracksGrid } from "./components/tracks-grid";
 import { useCallback } from "react";
-import { Search } from "@/components";
+import { Extra, GlobalSearch } from "@/components";
 
 export function Tracks() {
   const { toggleShuffle, playTrackAtIndex, ...player } = usePlayerStore();
@@ -33,12 +33,13 @@ export function Tracks() {
   }
 
   return (
-    <div className="py-4">
-      <Search />
+    <>
+      <GlobalSearch />
+      <Extra />
       <TracksGrid
         onTrackPlay={handleTrackPlay}
         tracks={tracksQuery.data ?? []}
       />
-    </div>
+    </>
   );
 }

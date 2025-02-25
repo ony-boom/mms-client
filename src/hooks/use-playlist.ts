@@ -1,6 +1,7 @@
 import { useFilterStore, usePlayerStore } from "@/stores";
 import { useApiClient } from "@/hooks/use-api-client";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useDebounce } from "./use-debounce";
 
 export const usePlaylist = () => {
   const { setPlaylists } = usePlayerStore();
@@ -10,7 +11,9 @@ export const usePlaylist = () => {
 
   const { useTracks, getTrackAudioSrc } = useApiClient();
 
-  const tracksQuery = useTracks(query, sort);
+  const debouncedQuery = useDebounce(query, 500);
+
+  const tracksQuery = useTracks(debouncedQuery, sort);
 
   const playlist = useMemo(
     () =>
