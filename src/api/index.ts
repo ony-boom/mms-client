@@ -1,6 +1,7 @@
 export * from "./types";
-import { defaultApi } from "./clients";
+import { defaultApi, defaultRestApi } from "./clients";
 
 export const apiClients = {
   default: defaultApi,
+  defaultRest: defaultRestApi,
 };
