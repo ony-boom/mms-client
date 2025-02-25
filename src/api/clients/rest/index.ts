@@ -18,7 +18,7 @@ const mapTrackSortField = (field: TrackSortField) => {
   return obj[field];
 };
 
-export const defaultRestApi: Api = {
+export const rest: Api = {
   getTrackCoverSrc: (trackId: string) => {
     return `${BASE_URL}/api/cover/${trackId}`;
   },

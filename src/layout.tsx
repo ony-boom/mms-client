@@ -8,7 +8,8 @@ import { AudioProvider } from "./context/audio-ref-context";
 import { ThemeProvider } from "./context/theme";
 import { apiClients } from "./api";
 
-const DEFAULT_API_CLIENT: keyof typeof apiClients = "default";
+const DEFAULT_API_CLIENT: keyof typeof apiClients =
+  import.meta.env.VITE_DEFAULT_API_NAME_TO_USE ?? "default";
 
 function Layout() {
   return (
@@ -16,7 +17,6 @@ function Layout() {
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <AppTitle />
         <WithColorFlow>
-          {/* <AppSidebar /> */}
           <main className="w-full">
             <AudioProvider>
               <Outlet />
