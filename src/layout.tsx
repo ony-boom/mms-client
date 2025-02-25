@@ -6,10 +6,13 @@ import { AppTitle, Player, WithColorFlow } from "@/components";
 import { Toaster } from "./components/ui/sonner";
 import { AudioProvider } from "./context/audio-ref-context";
 import { ThemeProvider } from "./context/theme";
+import { apiClients } from "./api";
+
+const DEFAULT_API_CLIENT: keyof typeof apiClients = "default";
 
 function Layout() {
   return (
-    <ApiContext.Provider value={{ apiClientName: "defaultRest" }}>
+    <ApiContext.Provider value={{ apiClientName: DEFAULT_API_CLIENT }}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <AppTitle />
         <WithColorFlow>
