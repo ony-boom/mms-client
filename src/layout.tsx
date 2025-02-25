@@ -9,8 +9,8 @@ import { ThemeProvider } from "./context/theme";
 
 function Layout() {
   return (
-    <ApiContext.Provider value={{ apiClientName: "default" }}>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <ApiContext.Provider value={{ apiClientName: "defaultRest" }}>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <AppTitle />
         <WithColorFlow>
           {/* <AppSidebar /> */}
@@ -19,7 +19,7 @@ function Layout() {
               <Outlet />
 
               <Player />
-              <Toaster theme="light" />
+              <Toaster />
             </AudioProvider>
           </main>
         </WithColorFlow>

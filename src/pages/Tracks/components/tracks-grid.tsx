@@ -33,7 +33,7 @@ const components: GridComponents = {
 export function TracksGrid({ tracks, onTrackPlay }: TracksGridProps) {
   if (tracks.length === 0) {
     return (
-      <div className="py-4">
+      <div className="py-4 h-screen grid place-items-center">
         <p>Looks like there's nothing here 🪹</p>
       </div>
     );
