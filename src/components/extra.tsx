@@ -1,16 +1,16 @@
 import { Sort } from "./sort.tsx";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Search, Shuffle } from "lucide-react";
 import { Button } from "./ui/button.tsx";
 import { SortOrder, TrackSortField } from "@/api";
-import { useApiClient, usePlaylist } from "@/hooks";
+import { useApiClient, useTrackList } from "@/hooks";
 import { TrackLoadToast } from "./track-load-toast";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useFilterStore, usePlayerStore } from "@/stores";
 
 export function Extra() {
-  const { resetPlaylist } = usePlaylist();
-  const { setSort, sort } = useFilterStore();
+  const { resetPlaylist, trackList } = useTrackList();
+  const { setSort, sort, query } = useFilterStore();
   const { setOpenSearchComponent } = useFilterStore();
   const { toggleShuffle, playTrackAtIndex } = usePlayerStore();
   const { useTracks } = useApiClient();
@@ -30,6 +30,11 @@ export function Extra() {
     setOpenSearchComponent(true);
   };
 
+  const hasSearch = useMemo(() => {
+    if (!query) return false;
+    return Object.values(query).some((value) => value);
+  }, [query]);
+
   return (
     <div className="relative flex w-full items-center justify-between gap-2 overflow-hidden rounded-md px-4 py-2">
       <div className="flex gap-2">
@@ -40,20 +45,25 @@ export function Extra() {
       </div>
 
       <div className="flex gap-2">
-        {data && data.length && (
+        {trackList?.length && (
           <Button variant={"ghost"} onClick={handleShuffle}>
-            <span className="-mt-[2px]">{data.length} Songs</span>
+            <span className="-mt-[2px]">{trackList?.length} Songs</span>
             <Shuffle />
           </Button>
         )}
 
         <Button
-          disabled={!data || !data.length}
-          onClick={handleSearchClick}
-          variant={"ghost"}
           size={"icon"}
+          variant={"ghost"}
+          className="relative"
+          onClick={handleSearchClick}
+          disabled={!data || !data.length}
         >
           <Search />
+
+          {hasSearch && (
+            <span className="bg-primary absolute top-2 right-2 h-1 w-1 rounded-full"></span>
+          )}
         </Button>
 
         <TrackLoadToast variant={"ghost"} />

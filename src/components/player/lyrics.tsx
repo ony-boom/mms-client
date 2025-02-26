@@ -142,7 +142,7 @@ export const Lyrics = memo(({ onClose }: LyricsProps) => {
               title={isActive ? "" : "Click to seek to this position"}
               ref={isActive ? activeLyricRef : null}
               className={cn(
-                "text-foreground/55 w-max max-w-6xl cursor-pointer leading-10 transition-all",
+                "text-foreground/50 w-max max-w-6xl cursor-pointer leading-10 transition-all",
                 {
                   "text-foreground text-4xl": isActive,
                 },

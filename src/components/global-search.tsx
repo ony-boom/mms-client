@@ -3,6 +3,7 @@ import { QueryField, useFilterStore } from "@/stores";
 import { Input } from "@/components/ui/input";
 import { AnimatePresence, motion } from "motion/react";
 import { ChangeEvent, FormEvent, useEffect } from "react";
+import clsx from "clsx";
 
 export function GlobalSearch() {
   const {
@@ -30,7 +31,7 @@ export function GlobalSearch() {
   };
 
   useEffect(() => {
-    window.addEventListener("keydown", (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "f" && e.ctrlKey) {
         setOpenSearchComponent(true);
         e.preventDefault();
@@ -38,16 +39,23 @@ export function GlobalSearch() {
       if (e.key === "Escape") {
         setOpenSearchComponent(false);
       }
-    });
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [setOpenSearchComponent]);
 
   const onBadgeClick = (field: string) => {
+    if (field === "*" && queryField === "*") return;
     if (field === queryField) {
       setQueryField("*");
       setQuery({ [queryField]: "" });
-    } else {
-      setQueryField(field as QueryField);
+      return;
     }
+    setQueryField(field as QueryField);
   };
 
   return (
@@ -79,15 +87,21 @@ export function GlobalSearch() {
               className="flex gap-2 px-2 py-4"
               onClick={(e) => e.stopPropagation()}
             >
-              {searchField.map((field) => (
-                <Badge
-                  key={field.value}
-                  onClick={() => onBadgeClick(field.value)}
-                  variant={queryField === field.value ? "default" : "outline"}
-                >
-                  {field.label}
-                </Badge>
-              ))}
+              {searchField.map((field) => {
+                const isActive = queryField === field.value;
+                return (
+                  <Badge
+                    key={field.value}
+                    className={clsx("cursor-pointer", {
+                      "hover:bg-accent": !isActive,
+                    })}
+                    onClick={() => onBadgeClick(field.value)}
+                    variant={isActive ? "default" : "outline"}
+                  >
+                    {field.label}
+                  </Badge>
+                );
+              })}
             </div>
           </form>
         </motion.div>
@@ -97,6 +111,10 @@ export function GlobalSearch() {
 }
 
 const searchField = [
+  {
+    label: "All",
+    value: "*",
+  },
   {
     label: "Artist",
     value: "artistName",

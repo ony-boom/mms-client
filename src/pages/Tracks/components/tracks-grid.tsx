@@ -16,6 +16,7 @@ const components: GridComponents = {
           display: "grid",
           gap: "32px",
           paddingInline: "16px",
+          paddingBottom: "230px",
           gridTemplateColumns: `repeat(auto-fill, minmax(${ITEM_SIZE}px, 1fr))`,
         }}
       >

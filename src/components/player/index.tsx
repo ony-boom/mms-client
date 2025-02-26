@@ -60,7 +60,7 @@ export function Player() {
       <div className="fixed bottom-2 left-[50%] z-50 translate-x-[-50%] space-y-2">
         <div
           id="player"
-          className="with-blur border-foreground/10 flex w-auto flex-col overflow-hidden rounded-md border"
+          className="with-blur border-foreground/10 flex w-max flex-col overflow-hidden rounded-md border"
         >
           <div className="mt-2 flex justify-center">
             <button

@@ -1,6 +1,6 @@
 import { usePlayerStore } from "@/stores";
 import { Loading } from "./components/loading";
-import { usePlaylist } from "@/hooks";
+import { useTrackList } from "@/hooks";
 import { TracksGrid } from "./components/tracks-grid";
 import { useCallback } from "react";
 import { Extra, GlobalSearch } from "@/components";
@@ -8,7 +8,7 @@ import { Extra, GlobalSearch } from "@/components";
 export function Tracks() {
   const { toggleShuffle, playTrackAtIndex, ...player } = usePlayerStore();
 
-  const { tracksQuery, resetPlaylist } = usePlaylist();
+  const { tracksQuery, resetPlaylist } = useTrackList();
 
   const handleTrackPlay = useCallback(
     (index: number, id: string) => {
