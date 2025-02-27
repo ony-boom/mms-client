@@ -191,6 +191,7 @@ const lyricsVariants: Variants = {
     opacity: 1,
     x: "-50%",
     bottom: 0,
+    backfaceVisibility: "hidden",
     transition: {
       type: "tween",
       duration: 0.3,
@@ -215,6 +216,7 @@ const playlistVariants: Variants = {
   initial: { height: 0 },
   animate: {
     height: "auto",
+    backfaceVisibility: "hidden",
   },
   exit: {
     height: 0,
