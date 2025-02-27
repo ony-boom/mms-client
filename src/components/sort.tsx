@@ -59,7 +59,7 @@ export function Sort({ value, onValueChange }: TrackMenuSortProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div className="text-foreground group hover:bg-accent flex items-center gap-1 overflow-hidden rounded-md backdrop-blur-md">
+        <div className="text-foreground group flex items-center gap-1 overflow-hidden">
           <Button
             size={"sm"}
             role="combobox"
