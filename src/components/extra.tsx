@@ -47,7 +47,7 @@ export function Extra() {
       </div>
 
       <div className="flex gap-2">
-        {trackList?.length && (
+        {trackList?.length > 0 && (
           <Button variant={"ghost"} onClick={handleShuffle}>
             <span className="-mt-[2px]">{trackList?.length} Songs</span>
             <Shuffle />
