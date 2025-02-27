@@ -21,7 +21,7 @@ export function Tracks() {
       }
       toggle();
     },
-    [resetPlaylist, toggle, toggleShuffle, playTrackAtIndex],
+    [resetPlaylist, currentTrackId, toggle, toggleShuffle, playTrackAtIndex],
   );
 
   if (tracksQuery.isLoading) {
