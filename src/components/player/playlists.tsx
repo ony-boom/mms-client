@@ -8,8 +8,7 @@ import { TrackContextMenu } from "@/components";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
 
 export function Playlists() {
-  const { playlistOrder, shuffleOrder, isShuffle } = usePlayerStore();
-  const { getCurrentIndex } = usePlayerStore();
+  const { playlistOrder, shuffleOrder, isShuffle, getCurrentIndex } = usePlayerStore.getState();
   const virtuoso = useRef<VirtuosoHandle>(null);
 
   const playingIndex = getCurrentIndex();
@@ -36,7 +35,7 @@ const PlayListElement = memo(
   ({ trackId, index }: { trackId: string; index: number }) => {
     const { useTracks } = useApiClient();
     const { data } = useTracks({ id: trackId });
-    const { currentTrackId, playTrackAtIndex } = usePlayerStore();
+    const { currentTrackId, playTrackAtIndex } = usePlayerStore.getState();
 
     const isCurrent = currentTrackId === trackId;
 

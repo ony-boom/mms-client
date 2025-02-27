@@ -5,12 +5,18 @@ import { TrackCover } from "./track-cover";
 import { Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TrackContextMenu } from "@/components";
+import { useShallow } from "zustand/react/shallow";
 
 function Card({ track, index, onTrackPlay }: TrackCardProps) {
   const artistNames = track.artists.map((artist) => artist.name).join(", ");
-  const player = usePlayerStore();
+  const { currentTrackId, isPlaying } = usePlayerStore(
+    useShallow((state) => ({
+      currentTrackId: state.currentTrackId,
+      isPlaying: state.isPlaying,
+    })),
+  );
 
-  const isCurrent = track.id === player.currentTrackId;
+  const isCurrent = track.id === currentTrackId;
 
   const onPlayButtonClick = () => {
     onTrackPlay(index, track.id);
@@ -42,7 +48,7 @@ function Card({ track, index, onTrackPlay }: TrackCardProps) {
         onClick={onPlayButtonClick}
         className="absolute right-2 bottom-16 z-20 opacity-0 shadow-xl transition group-hover:opacity-100"
       >
-        {isCurrent && player.isPlaying ? <Pause /> : <Play />}
+        {isCurrent && isPlaying ? <Pause /> : <Play />}
       </Button>
     </div>
   );

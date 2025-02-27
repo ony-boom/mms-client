@@ -12,7 +12,9 @@ export function Extra() {
   const { resetPlaylist, trackList } = useTrackList();
   const { setSort, sort, query } = useFilterStore();
   const { setOpenSearchComponent } = useFilterStore();
-  const { toggleShuffle, playTrackAtIndex } = usePlayerStore();
+
+  const { toggleShuffle, playTrackAtIndex } = usePlayerStore.getState();
+
   const { useTracks } = useApiClient();
   const { data } = useTracks();
 

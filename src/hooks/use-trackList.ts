@@ -2,9 +2,16 @@ import { useDebounce } from "./use-debounce";
 import { useApiClient } from "@/hooks/use-api-client";
 import { useFilterStore, usePlayerStore } from "@/stores";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 export const useTrackList = () => {
-  const { setPlaylists, playlistOrder } = usePlayerStore();
+  const { setPlaylists, playlistOrder } = usePlayerStore(
+    useShallow((state) => ({
+      setPlaylists: state.setPlaylists,
+      playlistOrder: state.playlistOrder,
+    })),
+  );
+  
   const { sort, query } = useFilterStore();
   const { useTracks, getTrackAudioSrc } = useApiClient();
 

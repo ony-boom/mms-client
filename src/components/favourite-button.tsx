@@ -9,7 +9,7 @@ import { useCallback } from "react";
 import { motion } from "motion/react";
 
 export function FavouriteButton(props: ButtonProps) {
-  const { currentTrackId } = usePlayerStore();
+  const currentTrackId = usePlayerStore((state) => state.currentTrackId);
   const { useFavoriteTrack, useTracks } = useApiClient();
   const queryClient = useQueryClient();
   const { data, isLoading } = useTracks({ id: currentTrackId });

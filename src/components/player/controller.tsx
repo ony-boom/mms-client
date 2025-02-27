@@ -1,10 +1,4 @@
-import {
-  Pause,
-  Play,
-  Shuffle,
-  SkipBack,
-  SkipForward,
-} from "lucide-react";
+import { Pause, Play, Shuffle, SkipBack, SkipForward } from "lucide-react";
 import { usePlayerStore } from "@/stores";
 import { Button } from "@/components/ui/button";
 import { FavouriteButton } from "@/components";
@@ -21,7 +15,7 @@ export function Controller({ shouldPlay }: ControllerProps) {
     hasNext,
     hasPrev,
     getCurrentPlaylist,
-  } = usePlayerStore();
+  } = usePlayerStore.getState();
 
   const handleShuffle = () => {
     toggleShuffle();

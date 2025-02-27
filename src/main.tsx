@@ -1,9 +1,14 @@
-import Layout from "./layout";
+import { scan } from "react-scan";
 import { StrictMode } from "react";
+import Layout from "./layout";
 import { Tracks } from "./pages";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+scan({
+  enabled: import.meta.env.DEV,
+});
 
 const queryClient = new QueryClient();
 

@@ -1,5 +1,5 @@
 import { Track } from "@/api";
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 import { TrackCard } from "./track-card";
 import { VirtuosoGrid, type GridComponents } from "react-virtuoso";
 
@@ -31,10 +31,10 @@ const components: GridComponents = {
   ),
 };
 
-export function TracksGrid({ tracks, onTrackPlay }: TracksGridProps) {
+export const TracksGrid = memo(({ tracks, onTrackPlay }: TracksGridProps) => {
   if (tracks.length === 0) {
     return (
-      <div className="py-4 h-screen grid place-items-center">
+      <div className="grid h-screen place-items-center py-4">
         <p>Looks like there's nothing here 🪹</p>
       </div>
     );
@@ -51,7 +51,7 @@ export function TracksGrid({ tracks, onTrackPlay }: TracksGridProps) {
       style={{ height: "100vh", willChange: "transform" }}
     />
   );
-}
+});
 
 type TracksGridProps = {
   tracks: Track[];

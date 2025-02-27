@@ -4,7 +4,7 @@ import { useApiClient } from "@/hooks/use-api-client.ts";
 import { themeFromImage, type Theme } from "@material/material-color-utilities";
 
 export const useColorFlow = () => {
-  const { currentTrackId } = usePlayerStore();
+  const currentTrackId = usePlayerStore((state) => state.currentTrackId);
   const { getTrackCoverSrc } = useApiClient();
   const [color, setColor] = useState<Theme | null>(null);
 

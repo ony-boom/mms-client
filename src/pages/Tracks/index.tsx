@@ -6,22 +6,22 @@ import { useCallback } from "react";
 import { Extra, GlobalSearch } from "@/components";
 
 export function Tracks() {
-  const { toggleShuffle, playTrackAtIndex, ...player } = usePlayerStore();
+  const { toggleShuffle, playTrackAtIndex, currentTrackId, toggle } = usePlayerStore.getState();
 
   const { tracksQuery, resetPlaylist } = useTrackList();
 
   const handleTrackPlay = useCallback(
     (index: number, id: string) => {
       resetPlaylist();
-      const isCurrent = id === player.currentTrackId;
+      const isCurrent = id === currentTrackId;
       if (!isCurrent) {
         toggleShuffle(false);
         playTrackAtIndex(index);
         return;
       }
-      player.toggle();
+      toggle();
     },
-    [resetPlaylist, player, toggleShuffle, playTrackAtIndex],
+    [resetPlaylist, toggle, toggleShuffle, playTrackAtIndex],
   );
 
   if (tracksQuery.isLoading) {

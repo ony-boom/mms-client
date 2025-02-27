@@ -7,9 +7,16 @@ import { useMemo, useRef, useEffect, memo } from "react";
 import { useApiClient, useAudioRef } from "@/hooks";
 import { Button } from "../ui/button";
 import { Minimize2 as Minimize } from "lucide-react";
+import { useShallow } from "zustand/react/shallow";
 
 export const Lyrics = memo(({ onClose }: LyricsProps) => {
-  const { currentTrackId, position, isPlaying } = usePlayerStore();
+  const { currentTrackId, position, isPlaying } = usePlayerStore(
+    useShallow((state) => ({
+      currentTrackId: state.currentTrackId,
+      position: state.position,
+      isPlaying: state.isPlaying,
+    })),
+  );
   const { useTrackLyrics } = useApiClient();
   const { data, isLoading } = useTrackLyrics(currentTrackId!);
   const audioRef = useAudioRef();

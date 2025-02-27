@@ -22,7 +22,7 @@ export const Audio = memo(
       play,
       playNext,
       playPrev,
-    } = usePlayerStore();
+    } = usePlayerStore.getState();
 
     const updateNavigatorMetadata = useCallback(() => {
       navigator.mediaSession.metadata = new MediaMetadata({

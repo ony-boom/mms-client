@@ -3,7 +3,7 @@ import { motion, useAnimation } from "motion/react"; // Keeping the import as is
 import { usePlayerStore } from "@/stores";
 
 export function WaveBars() {
-  const { isPlaying } = usePlayerStore();
+  const isPlaying = usePlayerStore(state => state.isPlaying);
   const controls = useAnimation();
 
   useEffect(() => {
