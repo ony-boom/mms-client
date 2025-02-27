@@ -29,7 +29,7 @@ export interface PlayerStateActions {
   toggle: () => void;
   playNext: () => void;
   playPrev: () => void;
-  playAfter: (id: string, src?: string) => void;
+  playAfter: (track: Track) => void;
   hasPrev: () => boolean;
   hasNext: () => boolean;
   toggleShuffle: (value?: boolean, shuffleAll?: boolean) => void;
@@ -37,6 +37,7 @@ export interface PlayerStateActions {
   playAtRandom: () => void;
   getCurrentIndex: () => number;
   getCurrentTrack: () => Track | undefined;
+  addToQueue: (track: Track) => void;
 }
 
 export type PlayerState = PlayerStateProperties & PlayerStateActions;

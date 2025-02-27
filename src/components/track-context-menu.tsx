@@ -6,24 +6,33 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { usePlayerStore } from "@/stores";
-import { CircleUserRound, Disc, Redo2 } from "lucide-react";
+import { ListEnd, Redo2 } from "lucide-react";
 import { useApiClient } from "@/hooks";
 import { memo, ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 export const TrackContextMenu = memo(
   ({ track, children }: TrackContextMenuProps) => {
-    const { playAfter, currentTrackId } = usePlayerStore(
+    const { playAfter, currentTrackId, addToQueue } = usePlayerStore(
       useShallow((state) => ({
         currentTrackId: state.currentTrackId,
         playAfter: state.playAfter,
+        addToQueue: state.addToQueue,
       })),
     );
     const { getTrackAudioSrc } = useApiClient();
 
     const onPlayNextClick = () => {
       const src = getTrackAudioSrc([track.id])[0];
-      playAfter(track.id, src);
+      playAfter({
+        src,
+        id: track.id,
+      });
+    };
+
+    const onAddToQueueClick = () => {
+      const trackSrc = getTrackAudioSrc([track.id])[0];
+      addToQueue({ id: track.id, src: trackSrc });
     };
 
     return (
@@ -33,20 +42,15 @@ export const TrackContextMenu = memo(
           <ContextMenuItem
             className="w-full"
             onClick={onPlayNextClick}
-            disabled={!currentTrackId}
+            disabled={!currentTrackId || currentTrackId === track.id}
           >
             Play next
             <Redo2 size={16} className="ml-auto" />
           </ContextMenuItem>
 
-          <ContextMenuItem className="w-full">
-            Go to artist
-            <CircleUserRound size={16} className="ml-auto" />
-          </ContextMenuItem>
-
-          <ContextMenuItem className="w-full">
-            Go to album
-            <Disc size={16} className="ml-auto" />
+          <ContextMenuItem className="w-full" onClick={onAddToQueueClick}>
+            Add to queue
+            <ListEnd size={16} className="ml-auto" />
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>

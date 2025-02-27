@@ -7,23 +7,25 @@ import { Controller } from "./controller";
 import { useEffect, useState } from "react";
 import { TrackProgress } from "./track-progress";
 import { MessageSquareQuote } from "lucide-react";
+import { useShallow } from "zustand/react/shallow";
 import { Button } from "@/components/ui/button.tsx";
 import { useApiClient, useAudioRef } from "@/hooks";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { Playlists } from "@/components/player/playlists";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
 import { motion, AnimatePresence, type Variants } from "motion/react";
-import {useShallow} from "zustand/react/shallow";
 
 export function Player() {
   const [playlistsExpanded, setPlaylistsExpanded] = useState(false);
   const [openLyricsView, setOpenLyricsView] = useState(false);
   const { useTracks } = useApiClient();
-  const { isPlaying, src, currentTrackId } = usePlayerStore(useShallow((state) => ({
-    src: state.src,
-    isPlaying: state.isPlaying,
-    currentTrackId: state.currentTrackId,
-  })));
+  const { isPlaying, src, currentTrackId } = usePlayerStore(
+    useShallow((state) => ({
+      src: state.src,
+      isPlaying: state.isPlaying,
+      currentTrackId: state.currentTrackId,
+    })),
+  );
 
   const audioRef = useAudioRef();
   const { data } = useTracks({ id: currentTrackId });

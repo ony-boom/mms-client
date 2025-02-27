@@ -2,23 +2,27 @@ import { Pause, Play, Shuffle, SkipBack, SkipForward } from "lucide-react";
 import { usePlayerStore } from "@/stores";
 import { Button } from "@/components/ui/button";
 import { FavouriteButton } from "@/components";
+import { useShallow } from "zustand/react/shallow";
 
 export function Controller({ shouldPlay }: ControllerProps) {
-  const {
-    isPlaying,
-    currentTrackId,
-    toggle,
-    playNext,
-    playPrev,
-    toggleShuffle,
-    isShuffle,
-    hasNext,
-    hasPrev,
-    getCurrentPlaylist,
-  } = usePlayerStore.getState();
+  const playerState = usePlayerStore(
+    useShallow((state) => ({
+      isPlaying: state.isPlaying,
+      currentTrackId: state.currentTrackId,
+      toggle: state.toggle,
+      playNext: state.playNext,
+      playPrev: state.playPrev,
+      toggleShuffle: state.toggleShuffle,
+      isShuffle: state.isShuffle,
+      hasNext: state.hasNext,
+      hasPrev: state.hasPrev,
+      getCurrentPlaylist: state.getCurrentPlaylist,
+      playlistOrder: state.playlistOrder, // just to trigger re-render so hasPrev/hasNext works
+    })),
+  );
 
   const handleShuffle = () => {
-    toggleShuffle();
+    playerState.toggleShuffle();
   };
 
   return (
@@ -26,27 +30,27 @@ export function Controller({ shouldPlay }: ControllerProps) {
       <FavouriteButton variant={"ghost"} />
       <Button
         onClick={handleShuffle}
-        className={isShuffle ? "text-foreground" : "text-foreground/50"}
+        className={playerState.isShuffle ? "text-foreground" : "text-foreground/50"}
         size="icon"
         variant="ghost"
-        disabled={getCurrentPlaylist().length === 0}
+        disabled={playerState.getCurrentPlaylist().length === 0}
       >
         <Shuffle />
       </Button>
       <Button
-        onClick={playPrev}
-        disabled={!hasPrev() || !currentTrackId}
+        onClick={playerState.playPrev}
+        disabled={!playerState.hasPrev() || !playerState.currentTrackId}
         size="icon"
         variant="ghost"
       >
         <SkipBack />
       </Button>
-      <Button disabled={Boolean(shouldPlay)} onClick={toggle} size="icon">
-        {isPlaying ? <Pause /> : <Play />}
+      <Button disabled={Boolean(shouldPlay)} onClick={playerState.toggle} size="icon">
+        {playerState.isPlaying ? <Pause /> : <Play />}
       </Button>
       <Button
-        onClick={playNext}
-        disabled={!hasNext() || !currentTrackId}
+        onClick={playerState.playNext}
+        disabled={!playerState.hasNext() || !playerState.currentTrackId}
         size="icon"
         variant="ghost"
       >
