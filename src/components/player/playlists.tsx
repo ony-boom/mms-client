@@ -6,9 +6,18 @@ import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import { WaveBars } from "./wave-bars";
 import { TrackContextMenu } from "@/components";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
+import { useShallow } from "zustand/react/shallow";
 
 export function Playlists() {
-  const { playlistOrder, shuffleOrder, isShuffle, getCurrentIndex } = usePlayerStore.getState();
+  const { playlistOrder, shuffleOrder, isShuffle, getCurrentIndex } =
+    usePlayerStore(
+      useShallow((state) => ({
+        playlistOrder: state.playlistOrder,
+        shuffleOrder: state.shuffleOrder,
+        isShuffle: state.isShuffle,
+        getCurrentIndex: state.getCurrentIndex,
+      })),
+    );
   const virtuoso = useRef<VirtuosoHandle>(null);
 
   const playingIndex = getCurrentIndex();
