@@ -6,7 +6,8 @@ import { useCallback } from "react";
 import { Extra, GlobalSearch } from "@/components";
 
 export function Tracks() {
-  const { toggleShuffle, playTrackAtIndex, currentTrackId, toggle } = usePlayerStore.getState();
+  const { toggleShuffle, playTrackAtIndex, currentTrackId, toggle } =
+    usePlayerStore.getState();
 
   const { tracksQuery, resetPlaylist } = useTrackList();
 
