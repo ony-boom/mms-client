@@ -77,6 +77,7 @@ export const createDebouncedStorage = () => {
           ).catch(() => ({})),
         ]);
 
+
         return {
           state: {
             position: position || 0,

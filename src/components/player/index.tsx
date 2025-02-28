@@ -28,6 +28,7 @@ export function Player() {
       src: state.src,
       isPlaying: state.isPlaying,
       currentTrackId: state.currentTrackId,
+      volume: state.volume,
     })),
   );
 
@@ -48,6 +49,7 @@ export function Player() {
     })();
   }, [audioRef, isPlaying, src]);
 
+
   return (
     <>
       <AnimatePresence>
@@ -59,7 +61,7 @@ export function Player() {
             animate="animate"
             exit="exit"
             data-scroller
-            className="with-blur fixed bottom-0 left-1/2 z-50 origin-bottom overflow-y-auto"
+            className="with-blur fixed bottom-0 left-1/2 z-50 origin-bottom overflow-y-auto border-none"
             style={{ transformOrigin: "bottom center" }}
           >
             <Lyrics onClose={() => setOpenLyricsView(false)} />
@@ -97,7 +99,7 @@ export function Player() {
           </AnimatePresence>
           <div
             id="player"
-            className="with-blur border-foreground/10 flex w-max flex-col overflow-hidden rounded-md border"
+            className="with-blur flex w-max flex-col overflow-hidden rounded-md"
           >
             <div className="mt-2 flex justify-center">
               <button

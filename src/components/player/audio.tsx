@@ -22,6 +22,7 @@ export const Audio = memo(
       play,
       playNext,
       playPrev,
+      volume,
     } = usePlayerStore.getState();
 
     const updateNavigatorMetadata = useCallback(() => {
@@ -52,6 +53,7 @@ export const Audio = memo(
     ) => {
       const audioElement = event.target as HTMLAudioElement;
       setDuration(audioElement.duration);
+      audioElement.volume = volume;
       audioElement.currentTime = position;
       updateNavigatorMetadata();
     };
