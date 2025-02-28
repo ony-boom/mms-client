@@ -2,6 +2,7 @@ import { Track } from "@/api";
 import { Audio } from "./audio";
 import { cn } from "@/lib/utils";
 import { Lyrics } from "./lyrics";
+import { Extra } from "./extra";
 import { usePlayerStore } from "@/stores";
 import { Controller } from "./controller";
 import { memo, useEffect, useState } from "react";
@@ -14,7 +15,6 @@ import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { Playlists } from "@/components/player/playlists";
 import { TrackCover } from "@/pages/Tracks/components/track-cover";
 import { motion, AnimatePresence, type Variants } from "motion/react";
-import { Extra } from "./extra";
 
 export function Player() {
   const [openExtra, setOpenExtra] = useState(false);
@@ -49,10 +49,7 @@ export function Player() {
   }, [audioRef, isPlaying, src]);
 
   return (
-    <motion.div
-      onHoverEnd={() => setOpenExtra(false)}
-      onHoverStart={() => setOpenExtra(true)}
-    >
+    <>
       <AnimatePresence>
         {openLyricsView && (
           <motion.div
@@ -70,71 +67,76 @@ export function Player() {
         )}
       </AnimatePresence>
 
-      <Audio currentTrack={currentTrack} ref={audioRef} />
+      <motion.div
+        onHoverEnd={() => setOpenExtra(false)}
+        onHoverStart={() => setOpenExtra(true)}
+      >
+        <Audio currentTrack={currentTrack} ref={audioRef} />
 
-      <div className="fixed bottom-2 left-[50%] z-50 translate-x-[-50%] space-y-2">
-        <AnimatePresence>
-          {openExtra && (
-            <motion.div
-              className="relative"
-              initial={{
-                opacity: 0,
-                translateY: 64,
-              }}
-              animate={{
-                opacity: 1,
-                translateY: 0,
-              }}
-              exit={{
-                opacity: 0,
-                translateY: 64,
-              }}
-            >
-              <Extra />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <div
-          id="player"
-          className="with-blur border-foreground/10 flex w-max flex-col overflow-hidden rounded-md border"
-        >
-          <div className="mt-2 flex justify-center">
-            <button
-              className={cn(
-                "bg-foreground/10 hover:bg-foreground/20 w-16 cursor-pointer rounded py-1 transition-all hover:w-20",
-                {
-                  "w-24": playlistsExpanded,
-                },
-              )}
-              onClick={() => setPlaylistsExpanded((prev) => !prev)}
-            />
-          </div>
-          <div className="relative flex items-center justify-between gap-16 px-3 pt-1 pb-4">
-            <TrackInfo
-              currentTrack={currentTrack!}
-              openLyricsView={openLyricsView}
-              onFullScreenToggle={() => setOpenLyricsView((prev) => !prev)}
-            />
-            <Controller shouldPlay={!currentTrack} />
-          </div>
-          <TrackProgress currentTrack={currentTrack} />
+        <div className="fixed bottom-2 left-[50%] z-50 translate-x-[-50%] space-y-2">
           <AnimatePresence>
-            {playlistsExpanded && (
+            {openExtra && (
               <motion.div
-                key="playlists"
-                variants={playlistVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                layout="position"
+                className="relative"
+                initial={{
+                  opacity: 0,
+                  translateY: 64,
+                }}
+                animate={{
+                  opacity: 1,
+                  translateY: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  translateY: 64,
+                }}
               >
-                <Playlists />
+                <Extra />
               </motion.div>
             )}
           </AnimatePresence>
+          <div
+            id="player"
+            className="with-blur border-foreground/10 flex w-max flex-col overflow-hidden rounded-md border"
+          >
+            <div className="mt-2 flex justify-center">
+              <button
+                className={cn(
+                  "bg-foreground/10 hover:bg-foreground/20 w-16 cursor-pointer rounded py-1 transition-all hover:w-20",
+                  {
+                    "w-24": playlistsExpanded,
+                  },
+                )}
+                onClick={() => setPlaylistsExpanded((prev) => !prev)}
+              />
+            </div>
+            <div className="relative flex items-center justify-between gap-16 px-3 pt-1 pb-4">
+              <TrackInfo
+                currentTrack={currentTrack!}
+                openLyricsView={openLyricsView}
+                onFullScreenToggle={() => setOpenLyricsView((prev) => !prev)}
+              />
+              <Controller shouldPlay={!currentTrack} />
+            </div>
+            <TrackProgress currentTrack={currentTrack} />
+            <AnimatePresence>
+              {playlistsExpanded && (
+                <motion.div
+                  key="playlists"
+                  variants={playlistVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  layout="position"
+                >
+                  <Playlists />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </>
   );
 }
 

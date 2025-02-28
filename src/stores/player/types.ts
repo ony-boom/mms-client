@@ -5,6 +5,7 @@ export type Track = {
 
 export interface PlayerStateProperties {
   src?: string;
+  volume: number;
   position: number;
   isPlaying: boolean;
   duration: number;
@@ -38,6 +39,7 @@ export interface PlayerStateActions {
   getCurrentIndex: () => number;
   getCurrentTrack: () => Track | undefined;
   addToQueue: (track: Track) => void;
+  setVolume: (volume: number) => void;
 }
 
 export type PlayerState = PlayerStateProperties & PlayerStateActions;

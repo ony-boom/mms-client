@@ -39,6 +39,7 @@ export const usePlayerStore = create<PlayerState>()(
     (set, get) => ({
       duration: 1,
       position: 0,
+      volume: 1,
       playlists: new Map(),
       playlistOrder: [],
       src: undefined,
@@ -47,6 +48,10 @@ export const usePlayerStore = create<PlayerState>()(
       isShuffle: false,
       currentTrackId: undefined,
       shuffleOrder: [],
+
+      setVolume(volume) {
+        set({ volume });
+      },
 
       setSrc: (src) => set({ src }),
       setPosition: (position) => set({ position }),
@@ -226,6 +231,7 @@ export const usePlayerStore = create<PlayerState>()(
           duration: state.duration,
           playlistOrder: state.playlistOrder,
           playingIndex: state.playingIndex,
+          volume: state.volume,
         } as PlayerState;
       },
       storage: createDebouncedStorage(),

@@ -1,12 +1,19 @@
 import { motion } from "motion/react";
 import { useAudioRef } from "@/hooks";
 import { Progress } from "../ui/progress";
-import { useEffect, useState, WheelEventHandler } from "react";
+import { usePlayerStore } from "@/stores";
+import { useShallow } from "zustand/react/shallow";
+import { useEffect, WheelEventHandler } from "react";
 import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 
 export const Extra = () => {
   const audioRef = useAudioRef();
-  const [volume, setVolume] = useState(audioRef.current?.volume || 0);
+  const { setVolume, volume } = usePlayerStore(
+    useShallow((state) => ({
+      volume: state.volume,
+      setVolume: state.setVolume,
+    })),
+  );
 
   const handleMouseWheel: WheelEventHandler<HTMLDivElement> = (e) => {
     if (!audioRef.current) return;
