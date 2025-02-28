@@ -8,7 +8,7 @@ import { TrackLoadToast } from "./track-load-toast";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useFilterStore, usePlayerStore } from "@/stores";
 
-export function Extra() {
+export function TopBar() {
   const { resetPlaylist, trackList } = useTrackList();
   const { setSort, sort, query } = useFilterStore();
   const { setOpenSearchComponent } = useFilterStore();

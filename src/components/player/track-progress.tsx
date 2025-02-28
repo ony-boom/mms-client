@@ -1,10 +1,11 @@
 import { memo } from "react";
 import { Track } from "@/api";
+import { motion } from "motion/react";
 import { usePlayerStore } from "@/stores";
 import { MouseEventHandler } from "react";
-import { Progress } from "@/components/ui/progress.tsx";
-import { useAudioRef } from "@/hooks/use-audio-ref";
 import { useShallow } from "zustand/react/shallow";
+import { useAudioRef } from "@/hooks/use-audio-ref";
+import { Progress } from "@/components/ui/progress.tsx";
 
 export const TrackProgress = memo(({ currentTrack }: TrackProgressProps) => {
   const { position, duration } = usePlayerStore(
@@ -28,11 +29,17 @@ export const TrackProgress = memo(({ currentTrack }: TrackProgressProps) => {
   };
 
   return (
-    <Progress
-      value={progress}
-      onClick={onProgressClick}
-      className="absolute bottom-0 left-0 z-50 h-1 w-full rounded-none bg-transparent transition-all hover:h-[6px] hover:cursor-pointer"
-    />
+    <motion.div
+      whileHover={{
+        scaleY: 1.5,
+      }}
+    >
+      <Progress
+        value={progress}
+        onClick={onProgressClick}
+        className="z-50 h-1 w-full rounded-none hover:cursor-pointer"
+      />
+    </motion.div>
   );
 });
 

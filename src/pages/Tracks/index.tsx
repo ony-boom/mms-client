@@ -3,7 +3,7 @@ import { Loading } from "./components/loading";
 import { useTrackList } from "@/hooks";
 import { TracksGrid } from "./components/tracks-grid";
 import { useCallback } from "react";
-import { Extra, GlobalSearch } from "@/components";
+import { TopBar, GlobalSearch } from "@/components";
 
 export function Tracks() {
   const { toggleShuffle, playTrackAtIndex, currentTrackId, toggle } =
@@ -36,7 +36,7 @@ export function Tracks() {
   return (
     <>
       <GlobalSearch />
-      <Extra />
+      <TopBar />
       <TracksGrid
         onTrackPlay={handleTrackPlay}
         tracks={tracksQuery.data ?? []}

@@ -3,8 +3,9 @@ import { usePlayerStore } from "@/stores";
 import { Button } from "@/components/ui/button";
 import { FavouriteButton } from "@/components";
 import { useShallow } from "zustand/react/shallow";
+import { memo } from "react";
 
-export function Controller({ shouldPlay }: ControllerProps) {
+export const Controller = memo(({ shouldPlay }: ControllerProps) => {
   const playerState = usePlayerStore(
     useShallow((state) => ({
       isPlaying: state.isPlaying,
@@ -30,7 +31,9 @@ export function Controller({ shouldPlay }: ControllerProps) {
       <FavouriteButton variant={"ghost"} />
       <Button
         onClick={handleShuffle}
-        className={playerState.isShuffle ? "text-foreground" : "text-foreground/50"}
+        className={
+          playerState.isShuffle ? "text-foreground" : "text-foreground/50"
+        }
         size="icon"
         variant="ghost"
         disabled={playerState.getCurrentPlaylist().length === 0}
@@ -45,7 +48,11 @@ export function Controller({ shouldPlay }: ControllerProps) {
       >
         <SkipBack />
       </Button>
-      <Button disabled={Boolean(shouldPlay)} onClick={playerState.toggle} size="icon">
+      <Button
+        disabled={Boolean(shouldPlay)}
+        onClick={playerState.toggle}
+        size="icon"
+      >
         {playerState.isPlaying ? <Pause /> : <Play />}
       </Button>
       <Button
@@ -58,8 +65,7 @@ export function Controller({ shouldPlay }: ControllerProps) {
       </Button>
     </div>
   );
-}
-
+});
 export type ControllerProps = {
   shouldPlay?: boolean;
 };
