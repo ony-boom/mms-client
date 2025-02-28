@@ -40,6 +40,7 @@ export const usePlayerStore = create<PlayerState>()(
       duration: 1,
       position: 0,
       volume: 1,
+      muted: false,
       playlists: new Map(),
       playlistOrder: [],
       src: undefined,
@@ -48,6 +49,10 @@ export const usePlayerStore = create<PlayerState>()(
       isShuffle: false,
       currentTrackId: undefined,
       shuffleOrder: [],
+
+      setMuted(muted) {
+        set({ muted });
+      },
 
       setVolume(volume) {
         set({ volume });
@@ -63,9 +68,9 @@ export const usePlayerStore = create<PlayerState>()(
         const state = get();
         return state.currentTrackId
           ? {
-              id: state.currentTrackId,
-              src: state.playlists.get(state.currentTrackId)!,
-            }
+            id: state.currentTrackId,
+            src: state.playlists.get(state.currentTrackId)!,
+          }
           : undefined;
       },
 

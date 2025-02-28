@@ -2,18 +2,13 @@ import { motion } from "motion/react";
 import { useAudioRef } from "@/hooks";
 import { Progress } from "../ui/progress";
 import { usePlayerStore } from "@/stores";
-import { useShallow } from "zustand/react/shallow";
-import { useEffect, WheelEventHandler } from "react";
+import { WheelEventHandler } from "react";
 import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 
 export const Extra = () => {
   const audioRef = useAudioRef();
-  const { setVolume, volume } = usePlayerStore(
-    useShallow((state) => ({
-      volume: state.volume,
-      setVolume: state.setVolume,
-    })),
-  );
+  const volume = usePlayerStore((state) => state.volume);
+  const muted = usePlayerStore((state) => state.muted);
 
   const handleMouseWheel: WheelEventHandler<HTMLDivElement> = (e) => {
     if (!audioRef.current) return;
@@ -26,24 +21,20 @@ export const Extra = () => {
 
   const volumeValue = volume * 100;
 
-  useEffect(() => {
+  const handleIconClick = () => {
     if (!audioRef.current) return;
-    const handleVolumeChange = (e: Event) => {
-      const audioEl = e.target as HTMLAudioElement;
-      setVolume(audioEl.volume);
-    };
-
-    audioRef.current.addEventListener("volumechange", handleVolumeChange);
-
-    return () => {
-      audioRef.current?.removeEventListener("volumechange", handleVolumeChange);
-    };
-  }, [audioRef]);
+    audioRef.current.muted = !audioRef.current.muted;
+  };
 
   return (
-    <motion.div onWheel={handleMouseWheel} className="flex w-full justify-end">
-      <div className="with-blur flex w-max items-center gap-1 rounded-md p-2">
-        <VolumeComp volume={volumeValue} />
+    <motion.div className="flex w-full justify-end">
+      <div
+        onWheel={handleMouseWheel}
+        className="with-blur flex w-max items-center gap-1 rounded-md p-2"
+      >
+        <button onClick={handleIconClick}>
+          <VolumeComp muted={muted} volume={volumeValue} />
+        </button>
         <motion.div
           whileHover={{
             scaleY: 1.5,
@@ -56,10 +47,10 @@ export const Extra = () => {
   );
 };
 
-const VolumeComp = ({ volume }: { volume: number }) => {
+const VolumeComp = ({ volume, muted }: { volume: number; muted: boolean }) => {
   const SIZE = 18;
 
-  if (volume === 0) {
+  if (volume === 0 || muted) {
     return <VolumeOff size={SIZE} />;
   }
 

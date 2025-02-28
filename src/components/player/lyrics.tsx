@@ -19,6 +19,8 @@ export const Lyrics = memo(({ onClose }: LyricsProps) => {
   );
   const { useTrackLyrics } = useApiClient();
   const { data, isLoading } = useTrackLyrics(currentTrackId!);
+  const { data: trackData } = useApiClient().useTracks({ id: currentTrackId });
+
   const audioRef = useAudioRef();
 
   const lyrics: LyricsResponse = useMemo(
@@ -91,6 +93,16 @@ export const Lyrics = memo(({ onClose }: LyricsProps) => {
   }
 
   if (!lyrics.text) {
+    const handleGoogleSearch = () => {
+      const track = trackData?.at(0);
+      if (!track) return;
+      const url = new URL("https://www.google.com/search");
+      const artist = track.artists.map((artist) => artist.name).join(", ");
+
+      url.searchParams.append("q", `${artist} ${track.title} lyrics`);
+      window.open(url.toString(), "_blank");
+    };
+
     return (
       <>
         <div className="sticky top-2 flex justify-end px-12 py-2">
@@ -101,6 +113,10 @@ export const Lyrics = memo(({ onClose }: LyricsProps) => {
         <div className="flex h-full w-full place-items-center space-y-4 overflow-auto p-12 pt-0 text-xl font-black">
           <p className="w-full text-center">
             Looks like we don't have the lyrics for this one
+            <br />
+            <Button onClick={handleGoogleSearch} variant={"link"}>
+              Search on Google
+            </Button>
           </p>
         </div>
       </>

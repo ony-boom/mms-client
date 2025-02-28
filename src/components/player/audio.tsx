@@ -23,6 +23,8 @@ export const Audio = memo(
       playNext,
       playPrev,
       volume,
+      setVolume,
+      setMuted,
     } = usePlayerStore.getState();
 
     const updateNavigatorMetadata = useCallback(() => {
@@ -61,6 +63,25 @@ export const Audio = memo(
     useEffect(() => {
       navigator.mediaSession.setActionHandler("previoustrack", playPrev);
       navigator.mediaSession.setActionHandler("nexttrack", playNext);
+
+      const typedRef = ref as React.MutableRefObject<HTMLAudioElement>;
+
+      if (!typedRef.current) return;
+
+      const handleVolumeChange = (e: Event) => {
+        const audioEl = e.target as HTMLAudioElement;
+        setVolume(audioEl.volume);
+        setMuted(audioEl.muted);
+      };
+
+      typedRef.current.addEventListener("volumechange", handleVolumeChange);
+
+      return () => {
+        typedRef.current?.removeEventListener(
+          "volumechange",
+          handleVolumeChange,
+        );
+      };
     }, [playNext, playPrev]);
 
     return (

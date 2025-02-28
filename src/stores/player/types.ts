@@ -15,6 +15,7 @@ export interface PlayerStateProperties {
   currentTrackId?: string;
   isShuffle: boolean;
   shuffleOrder: string[];
+  muted: boolean;
 }
 
 export interface PlayerStateActions {
@@ -40,6 +41,7 @@ export interface PlayerStateActions {
   getCurrentTrack: () => Track | undefined;
   addToQueue: (track: Track) => void;
   setVolume: (volume: number) => void;
+  setMuted: (muted: boolean) => void;
 }
 
 export type PlayerState = PlayerStateProperties & PlayerStateActions;
