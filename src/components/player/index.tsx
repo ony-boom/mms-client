@@ -5,7 +5,7 @@ import { Lyrics } from "./lyrics";
 import { Extra } from "./extra";
 import { usePlayerStore } from "@/stores";
 import { Controller } from "./controller";
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { TrackProgress } from "./track-progress";
 import { MessageSquareQuote } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
@@ -37,6 +37,18 @@ export function Player() {
 
   const currentTrack = data?.length === 1 ? data?.[0] : undefined;
 
+  const handleLyricsToggle = useCallback((value?: boolean) => {
+    if (value !== undefined) {
+      setOpenLyricsView(value);
+    } else {
+      setOpenLyricsView((prev) => !prev);
+    }
+  }, []);
+
+  const closeLyricsView = useCallback(() => {
+    handleLyricsToggle(false);
+  }, [handleLyricsToggle]);
+
   useEffect(() => {
     const audioElement = audioRef.current;
     if (!audioElement) return;
@@ -48,7 +60,6 @@ export function Player() {
       }
     })();
   }, [audioRef, isPlaying, src]);
-
 
   return (
     <>
@@ -64,7 +75,7 @@ export function Player() {
             className="with-blur fixed bottom-0 left-1/2 z-50 origin-bottom overflow-y-auto border-none"
             style={{ transformOrigin: "bottom center" }}
           >
-            <Lyrics onClose={() => setOpenLyricsView(false)} />
+            <Lyrics onClose={closeLyricsView} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -116,7 +127,7 @@ export function Player() {
               <TrackInfo
                 currentTrack={currentTrack!}
                 openLyricsView={openLyricsView}
-                onFullScreenToggle={() => setOpenLyricsView((prev) => !prev)}
+                onFullScreenToggle={handleLyricsToggle}
               />
               <Controller shouldPlay={!currentTrack} />
             </div>

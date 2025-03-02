@@ -5,5 +5,5 @@ export * from "./page-title";
 export * from "./global-search";
 export * from "./favourite-button";
 export * from "./track-load-toast";
-export * from "./with-control-flow";
+export * from "./with-color-flow";
 export * from "./track-context-menu";
